@@ -1,0 +1,521 @@
+# AIM
+
+To analyze privacy, network behavior, tracking mechanisms, and security risks of desktop applications and websites using Kali Linux tools such as Wireshark and Burp Suite, and to study real-world data breach incidents.
+
+---
+
+# PROCEDURE
+
+# Part A: Installing Required Software
+
+## Step 1: Start Kali Linux
+
+1. Start the Kali Linux virtual machine.
+2. Log in to the system.
+
+---
+
+## Step 2: Open Terminal
+
+Press:
+
+```text id="x5m8pq"
+Ctrl + Alt + T
+```
+
+Observation:
+
+* Terminal opens successfully.
+
+---
+
+## Step 3: Update Package Repository
+
+Execute:
+
+```bash id="n7v2qw"
+sudo apt update
+```
+
+Observation:
+
+* Package lists are updated successfully.
+
+---
+
+## Step 4: Install Node.js and npm
+
+Execute:
+
+```bash id="k4p9xm"
+sudo apt install nodejs npm -y
+```
+
+Observation:
+
+* Node.js and npm install successfully.
+
+---
+
+## Step 5: Verify Installation
+
+Execute:
+
+```bash id="r8w4zn"
+node -v
+```
+
+Execute:
+
+```bash id="u2t7pk"
+npm -v
+```
+
+Observation:
+
+* Installed versions are displayed.
+
+---
+
+# Part B: Creating Desktop WhatsApp Application
+
+## Step 6: Install Nativefier
+
+Execute:
+
+```bash id="w6x3qe"
+sudo npm install -g nativefier
+```
+
+Observation:
+
+* Nativefier installs successfully.
+
+---
+
+## Step 7: Create Desktop WhatsApp Application
+
+Execute:
+
+```bash id="p1v9mx"
+nativefier https://web.whatsapp.com
+```
+
+Observation:
+
+* A folder similar to:
+
+```text id="t4q8wr"
+web-whatsapp-linux-x64
+```
+
+is created.
+
+---
+
+## Step 8: Open WhatsApp Application Directory
+
+Execute:
+
+```bash id="c7m2zp"
+cd web-whatsapp-linux-x64
+```
+
+---
+
+## Step 9: Launch WhatsApp Desktop
+
+Execute:
+
+```bash id="y5v1kd"
+./WhatsAppWeb
+```
+
+Observation:
+
+* WhatsApp QR code login page opens.
+
+---
+
+## Step 10: Login to WhatsApp
+
+1. Open WhatsApp on mobile device.
+
+2. Navigate to:
+
+   ```text id="q9x4tn"
+   Linked Devices
+   ```
+
+3. Scan QR code shown on desktop application.
+
+Observation:
+
+* WhatsApp Desktop logs in successfully.
+
+---
+
+# Part C: Privacy Audit of WhatsApp Desktop
+
+## Step 11: Open Exodus Privacy Website
+
+1. Open Firefox browser.
+2. Visit:
+
+[Exodus Privacy Reports](https://reports.exodus-privacy.eu.org?utm_source=chatgpt.com)
+
+---
+
+## Step 12: Search for WhatsApp
+
+1. Search for:
+
+   ```text id="m3p8qw"
+   WhatsApp
+   ```
+
+Observation:
+
+* Privacy report appears.
+
+---
+
+## Step 13: Analyze Trackers and Permissions
+
+Observe trackers such as:
+
+* Google Analytics
+* Crashlytics
+* Facebook Analytics
+
+Also observe:
+
+* App permissions
+* Embedded trackers
+
+Observation:
+
+* Multiple trackers and permissions are detected.
+
+---
+
+# Part D: Capturing WhatsApp Traffic using Wireshark
+
+## Step 14: Launch Wireshark
+
+Execute:
+
+```bash id="u6r2vx"
+wireshark &
+```
+
+Observation:
+
+* Wireshark opens successfully.
+
+---
+
+## Step 15: Select Network Interface
+
+1. Select active interface:
+
+   * `eth0`
+   * `wlan0`
+
+2. Click:
+
+   ```text id="h8t5qm"
+   Start Capture
+   ```
+
+Observation:
+
+* Live network packets begin capturing.
+
+---
+
+## Step 16: Generate WhatsApp Traffic
+
+In WhatsApp Desktop:
+
+* Send messages
+* Send images
+* Open chats
+
+Observation:
+
+* Network activity increases in Wireshark.
+
+---
+
+## Step 17: Apply TLS Filter
+
+In Wireshark filter bar, enter:
+
+```text id="k2v9pe"
+tls
+```
+
+Press Enter.
+
+Observation:
+
+* TLS encrypted packets are displayed.
+
+---
+
+## Step 18: Apply DNS Filter
+
+Clear previous filter.
+
+Enter:
+
+```text id="r7m4xd"
+dns
+```
+
+Press Enter.
+
+Observation:
+
+* DNS queries are displayed.
+
+Domains observed may include:
+
+* `whatsapp.net`
+* `facebook.com`
+
+---
+
+## Step 19: Analyze WhatsApp Traffic
+
+Observe:
+
+* Encrypted TLS communication
+* IP addresses
+* DNS requests
+* Server communication timing
+
+Observation:
+
+* Message contents are not visible due to encryption.
+
+Inference:
+
+* WhatsApp uses End-to-End Encryption.
+
+---
+
+# Part E: Privacy Audit of Facebook Website
+
+## Step 20: Open Facebook Website
+
+1. Open Firefox browser.
+2. Visit:
+
+[Facebook](https://www.facebook.com?utm_source=chatgpt.com)
+
+3. Login using test account.
+
+Observation:
+
+* Facebook homepage opens.
+
+---
+
+## Step 21: Launch Burp Suite
+
+Execute:
+
+```bash id="p5w8tn"
+burpsuite
+```
+
+Observation:
+
+* Burp Suite launches successfully.
+
+---
+
+## Step 22: Configure Browser Proxy
+
+Set browser proxy settings:
+
+### HTTP Proxy
+
+```text id="v1x6qr"
+127.0.0.1
+```
+
+### Port
+
+```text id="n4t9zp"
+8080
+```
+
+Save settings.
+
+Observation:
+
+* Browser traffic routes through Burp Suite.
+
+---
+
+## Step 23: Enable Burp Intercept
+
+In Burp Suite:
+
+```text id="m7q2vk"
+Proxy → Intercept → ON
+```
+
+Observation:
+
+* Traffic interception enabled.
+
+---
+
+## Step 24: Reload Facebook Page
+
+Reload Facebook website in browser.
+
+Observation:
+
+* Requests appear in Burp Suite.
+
+---
+
+## Step 25: Analyze Intercepted Requests
+
+Observe:
+
+* Cookies (`datr`, `fr`)
+* Session IDs
+* HTTP headers
+* Request parameters
+
+Observation:
+
+* Multiple tracking and session cookies are visible.
+
+---
+
+## Step 26: Analyze Tracking Scripts
+
+1. Press:
+
+```text id="u3w8pm"
+F12
+```
+
+2. Open:
+
+   ```text id="y8m4qe"
+   Network tab
+   ```
+
+3. Reload Facebook page.
+
+Observation:
+
+* Third-party requests and analytics scripts appear.
+
+Possible observations:
+
+* Advertising requests
+* Analytics scripts
+* Tracking requests
+
+---
+
+# Part F: Data Breach Case Study Analysis
+
+# Case Study 1: Facebook Data Breach
+
+## Step 27: Analyze Facebook Breach
+
+Observation:
+
+* Approximately 533 million users affected.
+
+Data exposed:
+
+* Phone numbers
+* Email addresses
+* Personal information
+
+Cause:
+
+* API vulnerability
+
+Inference:
+
+* Improper API security caused large-scale data leakage.
+
+---
+
+# Case Study 2: WhatsApp Pegasus Attack
+
+## Step 28: Analyze Pegasus Attack
+
+Observation:
+
+* Spyware attack executed through missed calls.
+
+Impact:
+
+* Remote device compromise
+* Unauthorized surveillance
+
+Inference:
+
+* Zero-click vulnerabilities can compromise secure applications.
+
+---
+
+# Part G: Email Breach Analysis
+
+## Step 29: Open Have I Been Pwned
+
+Open browser and visit:
+
+[Have I Been Pwned](https://haveibeenpwned.com?utm_source=chatgpt.com)
+
+---
+
+## Step 30: Check Breach Status
+
+1. Enter test email address.
+2. Click:
+
+   ```text id="f6p1zt"
+   Check
+   ```
+
+Observation:
+
+* Breach history and exposed services may appear.
+
+---
+
+# OBSERVATIONS
+
+1. Node.js and npm installed successfully.
+2. Nativefier created a desktop WhatsApp application successfully.
+3. WhatsApp Desktop login using QR code worked correctly.
+4. Exodus Privacy identified multiple trackers and permissions in WhatsApp.
+5. Wireshark captured WhatsApp network traffic successfully.
+6. TLS-encrypted traffic protected message contents from direct inspection.
+7. DNS requests revealed communication with WhatsApp and Facebook domains.
+8. Burp Suite intercepted Facebook web traffic successfully.
+9. Facebook used multiple tracking cookies and third-party requests.
+10. Browser developer tools revealed analytics and advertising scripts.
+11. Facebook breach analysis showed large-scale API-related data exposure.
+12. WhatsApp Pegasus case study demonstrated risks of spyware attacks.
+13. Email breach analysis demonstrated how compromised accounts can be identified publicly.
+
+---
+
+# RESULT
+
+Privacy audits of Desktop WhatsApp and Facebook were successfully performed using Kali Linux tools such as Wireshark and Burp Suite. WhatsApp communication was found to be encrypted using TLS and End-to-End Encryption, while Facebook demonstrated extensive tracking and cookie usage. Data breach case studies highlighted the risks of insecure APIs, spyware attacks, and weak security practices.
