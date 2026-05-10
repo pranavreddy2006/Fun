@@ -1,0 +1,534 @@
+# AIM
+
+To create a forensic disk image and analyze digital evidence using dc3dd and Autopsy in Kali Linux while maintaining evidence integrity using hashing techniques.
+
+---
+
+# PROCEDURE
+
+## Step 1: Start Kali Linux
+
+1. Start the Kali Linux virtual machine.
+2. Log in to the system.
+
+---
+
+## Step 2: Open Terminal
+
+Press:
+
+```text id="x4m8pq"
+Ctrl + Alt + T
+```
+
+Observation:
+
+* Terminal window opens successfully.
+
+---
+
+# Part A: Creating Sample Evidence
+
+## Step 3: Create Sample Evidence File
+
+Execute:
+
+```bash id="n7v2qw"
+echo "Cybersecurity Lab Evidence" > evidence.txt
+```
+
+Observation:
+
+* A text file named `evidence.txt` is created.
+
+---
+
+## Step 4: Verify File Creation
+
+Execute:
+
+```bash id="k3p9xm"
+ls
+```
+
+Observation:
+
+* `evidence.txt` appears in directory listing.
+
+---
+
+# Part B: Identifying Disk Partition
+
+## Step 5: List Storage Devices
+
+Execute:
+
+```bash id="r8w4zn"
+lsblk
+```
+
+Observation:
+
+* Storage devices and partitions are displayed.
+
+Example:
+
+```text id="m5q1vd"
+sda
+├─sda1
+├─sda2
+```
+
+Note:
+
+* Identify the partition to be used for imaging.
+
+---
+
+# Part C: Installing dc3dd
+
+## Step 6: Install dc3dd
+
+Execute:
+
+```bash id="u2t7pk"
+sudo apt update
+```
+
+Then execute:
+
+```bash id="w6x3qe"
+sudo apt install dc3dd -y
+```
+
+Observation:
+
+* dc3dd installs successfully.
+
+---
+
+# Part D: Creating Practice Disk
+
+## Step 7: Create Small Practice Disk File
+
+Execute:
+
+```bash id="p1v9mx"
+dd if=/dev/zero of=practice_disk.dd bs=1M count=100
+```
+
+Explanation:
+
+| Parameter | Description       |
+| --------- | ----------------- |
+| if        | Input file/device |
+| of        | Output file       |
+| bs        | Block size        |
+| count     | Number of blocks  |
+
+Observation:
+
+* A 100 MB disk file is created.
+
+---
+
+## Step 8: Format the Disk File
+
+Execute:
+
+```bash id="t4q8wr"
+mkfs.ext4 practice_disk.dd
+```
+
+Observation:
+
+* EXT4 filesystem is created successfully.
+
+---
+
+# Part E: Mounting Disk and Adding Evidence
+
+## Step 9: Create Mount Directory
+
+Execute:
+
+```bash id="c7m2zp"
+mkdir /tmp/practice_mount
+```
+
+---
+
+## Step 10: Mount the Disk File
+
+Execute:
+
+```bash id="y5v1kd"
+sudo mount -o loop practice_disk.dd /tmp/practice_mount
+```
+
+Observation:
+
+* Disk image mounts successfully.
+
+---
+
+## Step 11: Copy Evidence into Mounted Disk
+
+Execute:
+
+```bash id="q9x4tn"
+sudo cp evidence.txt /tmp/practice_mount/
+```
+
+Observation:
+
+* Evidence file copied into disk image.
+
+---
+
+## Step 12: Verify Evidence File
+
+Execute:
+
+```bash id="m3p8qw"
+ls /tmp/practice_mount
+```
+
+Observation:
+
+* `evidence.txt` appears inside mounted disk.
+
+---
+
+## Step 13: Unmount Disk
+
+Execute:
+
+```bash id="u6r2vx"
+sudo umount /tmp/practice_mount
+```
+
+Observation:
+
+* Disk unmounts successfully.
+
+---
+
+# Part F: Creating Forensic Disk Image
+
+## Step 14: Create Forensic Image using dc3dd
+
+Execute:
+
+```bash id="h8t5qm"
+sudo dc3dd if=practice_disk.dd of=/home/kali/disk_image.dd hash=md5 log=/home/kali/acquisition.log
+```
+
+Explanation:
+
+| Parameter | Description             |
+| --------- | ----------------------- |
+| if        | Input file              |
+| of        | Output forensic image   |
+| hash      | Generates MD5 hash      |
+| log       | Creates acquisition log |
+
+Observation:
+
+* Disk image acquisition begins.
+* MD5 hash is generated.
+
+---
+
+# Part G: Verifying Image Creation
+
+## Step 15: Verify Disk Image
+
+Execute:
+
+```bash id="k2v9pe"
+ls -lh /home/kali/disk_image.dd
+```
+
+Observation:
+
+* `disk_image.dd` appears with file size details.
+
+---
+
+## Step 16: View Acquisition Log
+
+Execute:
+
+```bash id="r7m4xd"
+cat /home/kali/acquisition.log
+```
+
+Observation:
+
+* Log displays:
+
+  * Image size
+  * MD5 hash value
+  * Acquisition details
+
+---
+
+# Part H: Starting Autopsy
+
+## Step 17: Launch Autopsy
+
+Execute:
+
+```bash id="p5w8tn"
+autopsy
+```
+
+Observation:
+
+* Terminal displays URL similar to:
+
+```text id="v1x6qr"
+http://localhost:9999/autopsy
+```
+
+---
+
+## Step 18: Open Autopsy Interface
+
+1. Open Firefox browser.
+2. Enter:
+
+```text id="n4t9zp"
+http://localhost:9999/autopsy
+```
+
+Observation:
+
+* Autopsy web interface opens successfully.
+
+---
+
+# Part I: Creating New Case
+
+## Step 19: Create New Case
+
+1. Click:
+
+   ```text id="m7q2vk"
+   Create New Case
+   ```
+
+2. Enter case information.
+
+Example:
+
+| Field             | Value                           |
+| ----------------- | ------------------------------- |
+| Case Name         | DiskForensicsLab                |
+| Description       | Digital Forensics Investigation |
+| Investigator Name | Student Name                    |
+
+3. Click:
+
+   ```text id="u3w8pm"
+   New Case
+   ```
+
+Observation:
+
+* New forensic case is created.
+
+---
+
+# Part J: Adding Disk Image
+
+## Step 20: Add Host
+
+Click:
+
+```text id="y8m4qe"
+Add Host
+```
+
+---
+
+## Step 21: Enter Host Information
+
+Use recommended values:
+
+| Field                | Value                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| Host Name            | KaliLabMachine                                             |
+| Description          | Kali Linux virtual machine used for forensic investigation |
+| Time Zone            | Leave Blank                                                |
+| Time Skew Adjustment | Leave Blank                                                |
+| Alert Hash Database  | Leave Blank                                                |
+| Ignore Hash Database | Leave Blank                                                |
+
+Click:
+
+```text id="f6p1zt"
+Next
+```
+
+---
+
+## Step 22: Add Disk Image
+
+1. Select:
+
+   ```text id="k5x7mw"
+   Add Image
+   ```
+
+2. Browse and select:
+
+```text id="r2v9qn"
+/home/kali/disk_image.dd
+```
+
+3. Click:
+
+   ```text id="c4m8tp"
+   Next
+   ```
+
+Observation:
+
+* Autopsy starts analyzing the forensic image.
+
+---
+
+# Part K: Evidence Analysis
+
+## Step 23: Analyze File System
+
+1. In Autopsy, navigate to:
+
+   ```text id="x7t2vd"
+   File Views → File System
+   ```
+
+2. Locate:
+
+   ```text id="m1q5zr"
+   evidence.txt
+   ```
+
+Observation:
+
+* Evidence file is visible.
+
+---
+
+## Step 24: Open Evidence File
+
+1. Click:
+
+   ```text id="n8v4pk"
+   evidence.txt
+   ```
+
+Observation:
+
+* File content appears:
+
+```text id="q3m7wx"
+Cybersecurity Lab Evidence
+```
+
+---
+
+## Step 25: Analyze Metadata
+
+Observe:
+
+* File size
+* Created time
+* Modified time
+* File path
+
+Observation:
+
+* Metadata information is displayed successfully.
+
+---
+
+## Step 26: Perform Keyword Search
+
+1. Navigate to:
+
+   ```text id="t6x1qm"
+   Keyword Search
+   ```
+
+2. Search for:
+
+```text id="v9p4ke"
+Cybersecurity
+```
+
+Observation:
+
+* Matching evidence file is identified.
+
+---
+
+## Step 27: Analyze Deleted Files
+
+1. Open:
+
+   ```text id="h2w8zn"
+   Deleted Files
+   ```
+
+Observation:
+
+* Recoverable deleted files may appear.
+
+---
+
+## Step 28: Extract Evidence File
+
+1. Right-click:
+
+   ```text id="m4r7tx"
+   evidence.txt
+   ```
+
+2. Select:
+
+   ```text id="u7q2vp"
+   Extract File
+   ```
+
+3. Save extracted evidence.
+
+Observation:
+
+* Evidence file extracted successfully.
+
+---
+
+# OBSERVATIONS
+
+1. Kali Linux forensic environment started successfully.
+2. Sample evidence file was created successfully.
+3. Storage partitions were identified using `lsblk`.
+4. Practice disk image file was created and formatted successfully.
+5. Evidence file was copied into mounted disk image.
+6. dc3dd successfully created a forensic disk image.
+7. MD5 hash value was generated for integrity verification.
+8. Acquisition log recorded imaging details successfully.
+9. Autopsy forensic tool launched successfully.
+10. Disk image was imported into Autopsy without errors.
+11. Evidence file and metadata were identified successfully.
+12. Keyword search detected the evidence file.
+13. File extraction and analysis were completed successfully.
+
+---
+
+# RESULT
+
+A forensic disk image was successfully created using dc3dd and analyzed using Autopsy in Kali Linux. Digital evidence including files, metadata, and forensic artifacts was identified and examined successfully while maintaining evidence integrity through MD5 hashing.
