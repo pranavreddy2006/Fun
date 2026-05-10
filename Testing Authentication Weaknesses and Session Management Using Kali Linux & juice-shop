@@ -1,0 +1,694 @@
+# AIM
+
+To identify and analyze authentication vulnerabilities and session management flaws in OWASP Juice Shop using Docker, Kali Linux, and Burp Suite.
+
+---
+
+# REQUIREMENTS
+
+* Kali Linux
+* Docker
+* Burp Suite
+* Firefox or Chrome Browser
+* Internet Connection
+* OWASP Juice Shop
+
+---
+
+# THEORY
+
+## Authentication
+
+Authentication verifies the identity of users using login credentials.
+
+Common authentication vulnerabilities:
+
+* SQL Injection
+* Weak passwords
+* Brute force attacks
+* Username enumeration
+
+---
+
+## Session Management
+
+Session management maintains user state using session IDs or authentication tokens.
+
+Common session vulnerabilities:
+
+* Session hijacking
+* Session fixation
+* Improper logout
+* Weak session cookies
+* JWT token exposure
+
+---
+
+# PROCEDURE
+
+# PART A: Docker Installation and Juice Shop Setup
+
+## Step 1: Open Kali Linux
+
+1. Start Kali Linux virtual machine.
+2. Log in to the system.
+
+---
+
+## Step 2: Open Terminal
+
+1. Open Terminal in Kali Linux.
+
+---
+
+## Step 3: Update Package Repository
+
+Execute:
+
+```bash id="k4t8wp"
+sudo apt update
+```
+
+---
+
+## Step 4: Install Docker
+
+Execute:
+
+```bash id="x7m2qa"
+sudo apt install docker.io -y
+```
+
+Observation:
+
+* Docker installs successfully.
+
+---
+
+## Step 5: Start Docker Service
+
+Execute:
+
+```bash id="j3v9rm"
+sudo systemctl start docker
+```
+
+---
+
+## Step 6: Enable Docker Service
+
+Execute:
+
+```bash id="c8p4ze"
+sudo systemctl enable docker
+```
+
+---
+
+## Step 7: Verify Docker Installation
+
+Execute:
+
+```bash id="t5q1xn"
+docker --version
+```
+
+Observation:
+
+* Docker version information appears.
+
+---
+
+# PART B: Running OWASP Juice Shop
+
+## Step 8: Run Juice Shop Container
+
+Execute:
+
+```bash id="p9w6hk"
+sudo docker run -d -p 3000:3000 --name juice-shop bkimminich/juice-shop
+```
+
+Explanation:
+
+* `-d` → Run in background
+* `-p 3000:3000` → Port mapping
+* `--name juice-shop` → Container name
+
+---
+
+## Step 9: Verify Running Container
+
+Execute:
+
+```bash id="u2r8fm"
+sudo docker ps
+```
+
+Observation:
+
+* Juice Shop container appears in running containers list.
+
+---
+
+## Step 10: Open Juice Shop Application
+
+1. Open Firefox or Chrome browser.
+2. Enter:
+
+```text id="n6v3qe"
+http://localhost:3000
+```
+
+Observation:
+
+* Juice Shop homepage loads successfully.
+
+---
+
+# PART C: Configuring Burp Suite
+
+## Step 11: Open Burp Suite
+
+1. Open Terminal.
+2. Execute:
+
+```bash id="w4x9jt"
+burpsuite
+```
+
+---
+
+## Step 12: Create Temporary Project
+
+1. Select:
+
+   ```text id="m1k5pr"
+   Temporary Project
+   ```
+2. Click:
+
+   ```text id="q7v2fd"
+   Start Burp
+   ```
+
+---
+
+## Step 13: Enable Proxy Interception
+
+1. Navigate to:
+
+   ```text id="d5t8xn"
+   Proxy → Intercept
+   ```
+
+2. Turn:
+
+   ```text id="r2p6mw"
+   Intercept ON
+   ```
+
+---
+
+## Step 14: Configure Browser Proxy
+
+Set browser proxy settings:
+
+### HTTP Proxy
+
+```text id="z4k7yb"
+127.0.0.1
+```
+
+### Port
+
+```text id="c3m9qa"
+8080
+```
+
+Observation:
+
+* Browser traffic is routed through Burp Suite.
+
+---
+
+# PART D: Authentication Testing
+
+# Test 1: SQL Injection Login Bypass
+
+## Step 15: Open Login Page
+
+1. Navigate to Juice Shop login page.
+
+---
+
+## Step 16: Enter SQL Injection Payload
+
+Enter:
+
+### Email
+
+```sql id="v8t2xr"
+' OR 1=1 --
+```
+
+### Password
+
+```text id="k5q4zn"
+anything
+```
+
+Click:
+
+```text id="f7m1ye"
+Login
+```
+
+---
+
+## Step 17: Forward Request in Burp
+
+1. In Burp Suite:
+
+   ```text id="g9v6cp"
+   Proxy → Intercept
+   ```
+
+2. Click:
+
+   ```text id="x2r8mw"
+   Forward
+   ```
+
+Observation:
+
+* Login bypass succeeds.
+
+Inference:
+
+* Application vulnerable to SQL Injection.
+
+---
+
+# Test 2: Weak Password Policy
+
+## Step 18: Register New Account
+
+1. Open registration page.
+2. Create new account.
+
+---
+
+## Step 19: Use Weak Password
+
+Enter weak password:
+
+```text id="u7p5tk"
+12345
+```
+
+Observation:
+
+* Account creation succeeds.
+
+Inference:
+
+* No password complexity enforcement exists.
+
+---
+
+# Test 3: Brute Force Attack
+
+## Step 20: Capture Login Request
+
+1. Attempt login.
+2. Capture request in Burp Suite.
+
+---
+
+## Step 21: Send Request to Intruder
+
+1. Right click request.
+2. Select:
+
+   ```text id="m8x3qr"
+   Send to Intruder
+   ```
+
+---
+
+## Step 22: Configure Password Position
+
+1. Go to:
+
+   ```text id="w5v1cp"
+   Intruder → Positions
+   ```
+
+2. Select password field.
+
+---
+
+## Step 23: Load Wordlist
+
+Load:
+
+```text id="j9n4tm"
+/usr/share/wordlists/rockyou.txt
+```
+
+---
+
+## Step 24: Start Attack
+
+Click:
+
+```text id="b2r7xe"
+Start Attack
+```
+
+Observation:
+
+* Password discovered successfully.
+
+Inference:
+
+* No rate limiting or account lockout exists.
+
+---
+
+# Test 4: Username Enumeration
+
+## Step 25: Try Valid Username
+
+1. Enter valid email with wrong password.
+
+Observation:
+
+* Specific error message appears.
+
+---
+
+## Step 26: Try Invalid Username
+
+1. Enter invalid email with wrong password.
+
+Observation:
+
+* Different error message appears.
+
+Inference:
+
+* Application reveals valid usernames.
+
+---
+
+# PART E: Session Management Testing
+
+# Test 5: Session Cookie Analysis
+
+## Step 27: Login to Juice Shop
+
+1. Login with valid credentials.
+
+---
+
+## Step 28: Open Developer Tools
+
+Press:
+
+```text id="n4q8vw"
+F12
+```
+
+Navigate to:
+
+```text id="r6t1pk"
+Application → Cookies
+```
+
+Observation:
+
+* Session token visible.
+
+Inference:
+
+* Analyze for:
+
+  * HttpOnly flag
+  * Secure flag
+
+---
+
+# Test 6: Session Hijacking
+
+## Step 29: Copy Session Cookie
+
+1. Copy authentication cookie or token.
+
+---
+
+## Step 30: Open Another Browser
+
+1. Open another browser or private window.
+
+---
+
+## Step 31: Replace Session Cookie
+
+1. Replace cookie value with copied session token.
+
+Observation:
+
+* Access granted without login.
+
+Inference:
+
+* Session hijacking possible.
+
+---
+
+# Test 7: Session Fixation
+
+## Step 32: Note Session ID Before Login
+
+1. Open browser developer tools.
+2. Record current session token.
+
+---
+
+## Step 33: Login to Application
+
+1. Login normally.
+
+---
+
+## Step 34: Compare Session ID
+
+Observation:
+
+* Same token remains before and after login.
+
+Inference:
+
+* Session fixation vulnerability exists.
+
+---
+
+# Using Burp Suite to Find Token
+
+## Step 35: Intercept Login Request
+
+1. Turn Intercept ON.
+2. Login in browser.
+
+---
+
+## Step 36: Open HTTP History
+
+Navigate to:
+
+```text id="y8m3vc"
+Proxy → HTTP History
+```
+
+---
+
+## Step 37: Locate Login Request
+
+1. Click login request.
+2. Open:
+
+   ```text id="k1x7pd"
+   Response tab
+   ```
+
+---
+
+## Step 38: Find Authentication Token
+
+Locate:
+
+```text id="v4p9tw"
+Set-Cookie: token=
+```
+
+Observation:
+
+* JWT token visible.
+* This token acts as session identifier.
+
+---
+
+# Test 8: Logout Mechanism
+
+## Step 39: Copy Session Cookie
+
+1. Login normally.
+2. Copy token/cookie.
+
+---
+
+## Step 40: Logout
+
+1. Click:
+
+   ```text id="u3n5qa"
+   Logout
+   ```
+
+---
+
+## Step 41: Reuse Old Cookie
+
+1. Reinsert copied cookie.
+
+Observation:
+
+* Session remains active.
+
+Inference:
+
+* Logout does not invalidate session properly.
+
+---
+
+# Test 9: JWT Token Analysis
+
+## Step 42: Copy JWT Token
+
+1. Copy authentication token.
+
+---
+
+## Step 43: Decode JWT
+
+1. Open JWT decoder website.
+2. Paste JWT token.
+
+Observation:
+
+* Payload contents visible.
+
+---
+
+## Step 44: Analyze JWT Payload
+
+Visible data may include:
+
+* User ID
+* Email
+* Role
+* Account status
+* Token issue time
+
+Inference:
+
+* Improper JWT validation or exposure may lead to security risks.
+
+---
+
+# DOCKER COMMANDS USED
+
+## View Running Containers
+
+```bash id="f9q2vk"
+docker ps
+```
+
+---
+
+## Stop Juice Shop Container
+
+```bash id="c6w4rm"
+docker stop juice-shop
+```
+
+---
+
+## Start Juice Shop Container
+
+```bash id="x8p1tn"
+docker start juice-shop
+```
+
+---
+
+## Remove Juice Shop Container
+
+```bash id="m5v7qe"
+docker rm juice-shop
+```
+
+---
+
+## View Container Logs
+
+```bash id="j2k9wd"
+docker logs juice-shop
+```
+
+---
+
+# OBSERVATIONS
+
+| Test Case               | Observation |
+| ----------------------- | ----------- |
+| SQL Injection           | Successful  |
+| Weak Password Policy    | Found       |
+| Brute Force Attack      | Allowed     |
+| Username Enumeration    | Possible    |
+| Session Cookie Exposure | Found       |
+| Session Hijacking       | Successful  |
+| Session Fixation        | Observed    |
+| Improper Logout         | Observed    |
+| JWT Payload Exposure    | Visible     |
+
+---
+
+# RESULT
+
+Authentication and session management vulnerabilities were successfully identified in OWASP Juice Shop using Docker, Kali Linux, and Burp Suite. Vulnerabilities including SQL Injection, weak password policies, brute force attacks, session hijacking, session fixation, and insecure JWT handling were demonstrated successfully.
+
+---
+
+# CONCLUSION
+
+This experiment demonstrated that insecure authentication and weak session management mechanisms can lead to unauthorized access and account compromise. Secure password policies, session regeneration, secure cookie attributes, proper logout handling, and secure JWT validation are essential for protecting modern web applications.
+
+---
+
+# PREVENTION TECHNIQUES
+
+1. Strong Password Policies
+2. Multi-Factor Authentication (MFA)
+3. Rate Limiting
+4. Account Lockout Mechanisms
+5. Secure Session Regeneration
+6. Secure and HttpOnly Cookies
+7. Proper Logout Session Destruction
+8. Secure JWT Validation
+9. HTTPS Communication
+10. Input Validation and Prepared Statements
+
+--
