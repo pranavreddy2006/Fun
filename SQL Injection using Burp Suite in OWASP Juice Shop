@@ -425,6 +425,23 @@ Observation:
 ---
 
 ## Step 27: Identify Extracted Credentials
+Decode MD5 Password Hash
+After decoding the JWT token, locate the password hash.
+
+Example:
+
+0192023a7bbd73250516f069df18b500
+Open an online MD5 hash decoder website in the browser.
+Paste the MD5 hash into the decoder input box.
+
+Click:
+
+Decode / Crack Hash
+The original password is revealed.
+
+Example:
+
+admin123
 
 Decoded data may reveal:
 
