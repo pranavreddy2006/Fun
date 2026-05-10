@@ -1,0 +1,444 @@
+# AIM
+
+To analyze system log files and detect suspicious activities such as failed login attempts, SSH authentication failures, suspicious IP addresses, and possible brute force attacks using Linux log analysis tools.
+
+---
+
+# PROCEDURE
+
+## Step 1: Start Kali Linux
+
+1. Start the Kali Linux or Ubuntu virtual machine.
+2. Log in to the system.
+
+---
+
+## Step 2: Open Terminal
+
+Press:
+
+```text id="k4v8mp"
+Ctrl + Alt + T
+```
+
+Observation:
+
+* Terminal window opens successfully.
+
+---
+
+# Part A: Understanding System Log Files
+
+## Step 3: Navigate to Log Directory
+
+Execute:
+
+```bash id="n7q2wx"
+cd /var/log
+```
+
+---
+
+## Step 4: List Log Files
+
+Execute:
+
+```bash id="r5m9zp"
+ls
+```
+
+Observation:
+
+* Various system and application logs are displayed.
+
+Important log files observed:
+
+* `dpkg.log`
+* `apache2`
+* `nginx`
+* `journal`
+* `wtmp`
+* `btmp`
+
+---
+
+## Step 5: Analyze Successful Login Records
+
+Execute:
+
+```bash id="u1v6qe"
+last
+```
+
+Observation:
+
+* Successful login history is displayed.
+* Usernames, login times, and session durations are visible.
+
+---
+
+## Step 6: View System Logs using journalctl
+
+Execute:
+
+```bash id="m8x3wr"
+journalctl | less
+```
+
+Explanation:
+
+* `journalctl` displays centralized Linux system logs.
+
+Observation:
+
+* System events, services, and authentication logs are visible.
+
+---
+
+# Part B: Detecting Authentication Failures
+
+## Step 7: Search Failed Login Attempts
+
+Execute:
+
+```bash id="p4q7zn"
+journalctl | grep "Failed"
+```
+
+Observation:
+
+* Failed authentication attempts are displayed.
+
+Possible output:
+
+```text id="x9m2vk"
+Failed password for kali from 127.0.0.1 port 53512 ssh2
+```
+
+---
+
+## Step 8: Analyze SSH Activity
+
+Execute:
+
+```bash id="f6v1tm"
+journalctl | grep ssh
+```
+
+Observation:
+
+* SSH login attempts and SSH service activity are displayed.
+
+---
+
+## Step 9: Detect System Errors
+
+Execute:
+
+```bash id="w3p8qx"
+journalctl | grep -i error
+```
+
+Observation:
+
+* System error messages are displayed.
+
+These may indicate:
+
+* Service failures
+* Misconfigurations
+* Abnormal system behavior
+
+---
+
+# Part C: Apache Web Log Analysis
+
+## Step 10: Navigate to Apache Logs
+
+Execute:
+
+```bash id="c7m4wr"
+cd /var/log/apache2
+```
+
+---
+
+## Step 11: List Apache Log Files
+
+Execute:
+
+```bash id="q2v9pe"
+ls
+```
+
+Observation:
+
+* Apache log files such as `access.log` and `error.log` appear.
+
+---
+
+## Step 12: Open Apache Access Log
+
+Execute:
+
+```bash id="y5x1tk"
+sudo less access.log
+```
+
+Observation:
+
+* Web requests and client activity are displayed.
+
+---
+
+## Step 13: Detect Suspicious Web Requests
+
+Execute:
+
+```bash id="n8q6vm"
+grep "404" /var/log/apache2/access.log
+```
+
+Observation:
+
+* Failed web requests (404 errors) are displayed.
+
+Inference:
+
+* Multiple 404 requests may indicate scanning or probing attacks.
+
+---
+
+# Part D: Package Activity Analysis
+
+## Step 14: Analyze Package Logs
+
+Execute:
+
+```bash id="r1m7qx"
+less /var/log/dpkg.log
+```
+
+Observation:
+
+* Software installation and update activity are displayed.
+
+Inference:
+
+* Helps detect unauthorized software changes.
+
+---
+
+# Part E: Real-Time Monitoring
+
+## Step 15: Start Real-Time Log Monitoring
+
+Execute:
+
+```bash id="u6v3pk"
+sudo journalctl -f
+```
+
+Observation:
+
+* Live system logs appear in real time.
+
+Inference:
+
+* Useful for monitoring incidents as they occur.
+
+---
+
+# Part F: Simulating Failed SSH Login Attempts
+
+## Step 16: Install SSH Server
+
+Execute:
+
+```bash id="k9w4zn"
+sudo apt install openssh-server -y
+```
+
+Observation:
+
+* OpenSSH server installs successfully.
+
+---
+
+## Step 17: Start SSH Service
+
+Execute:
+
+```bash id="m2q8xt"
+sudo service ssh start
+```
+
+Observation:
+
+* SSH service starts successfully.
+
+---
+
+## Step 18: Identify System IP Address
+
+Execute:
+
+```bash id="p7v1rm"
+ip a
+```
+
+Observation:
+
+* Network interface details and IP addresses appear.
+
+Locate IPv4 address such as:
+
+```text id="x4t6qe"
+192.168.x.x
+```
+
+---
+
+## Step 19: Generate Failed SSH Login Attempts
+
+Execute:
+
+```bash id="v8m3wp"
+ssh fakeuser@localhost
+```
+
+OR
+
+```bash id="q5r9tk"
+ssh kali@localhost
+```
+
+Enter incorrect passwords multiple times (5–10 attempts).
+
+Observation:
+
+* Authentication fails repeatedly.
+
+---
+
+# Part G: Analyzing Failed Login Attempts
+
+## Step 20: Detect Failed Password Attempts
+
+Execute:
+
+```bash id="t1x7mv"
+journalctl | grep "Failed password"
+```
+
+Observation:
+
+* Failed SSH login attempts are displayed.
+
+Example:
+
+```text id="g6q2zp"
+Failed password for kali from 127.0.0.1 port 53512 ssh2
+```
+
+---
+
+## Step 21: Extract Suspicious IP Addresses
+
+Execute:
+
+```bash id="m9v5qd"
+journalctl | grep "Failed password" | awk '{print $11}'
+```
+
+Observation:
+
+* IP addresses responsible for failed attempts are displayed.
+
+Example:
+
+```text id="r3x8tk"
+127.0.0.1
+```
+
+---
+
+## Step 22: Count Failed Attempts per IP
+
+Execute:
+
+```bash id="y7m1wp"
+journalctl | grep "Failed password" | awk '{print $11}' | sort | uniq -c | sort -nr
+```
+
+Observation:
+
+* Failed login attempt counts per IP address are displayed.
+
+Example:
+
+```text id="k2v9qe"
+10 127.0.0.1
+```
+
+Inference:
+
+* Repeated attempts from same IP indicate brute force behavior.
+
+---
+
+# Part H: Alternative Failed Login Analysis
+
+## Step 23: View Failed Login Records using lastb
+
+Execute:
+
+```bash id="u4q6xn"
+sudo lastb
+```
+
+Observation:
+
+* Failed login history is displayed.
+
+---
+
+# Part I: Detecting Recent Attack Activity
+
+## Step 24: Analyze Recent Logs
+
+Execute:
+
+```bash id="f8m3wr"
+journalctl --since "10 minutes ago"
+```
+
+Observation:
+
+* Recent system activity and attack attempts are displayed.
+
+---
+
+# OBSERVATIONS
+
+1. System log files were successfully accessed from `/var/log`.
+2. Successful login history was viewed using the `last` command.
+3. `journalctl` displayed centralized Linux system logs successfully.
+4. Failed authentication attempts were identified using `grep`.
+5. SSH-related activities and login attempts were analyzed successfully.
+6. System error messages were detected using case-insensitive error filtering.
+7. Apache web server logs recorded client requests and failed HTTP requests.
+8. Multiple 404 requests indicated possible web scanning activity.
+9. Package activity logs showed software installation and update records.
+10. Real-time monitoring displayed live system activity successfully.
+11. Failed SSH login attempts were generated intentionally for analysis.
+12. Suspicious IP addresses were extracted successfully using `awk`.
+13. Multiple failed attempts from same IP indicated simulated brute force activity.
+14. `lastb` displayed failed login records successfully.
+15. Recent attack activity was analyzed using time-based journal filtering.
+
+---
+
+# RESULT
+
+System log files were successfully analyzed using Linux forensic and log analysis tools. Failed SSH login attempts, suspicious IP addresses, possible brute force behavior, system errors, and suspicious web requests were identified successfully through log file analysis and real-time monitoring techniques.
