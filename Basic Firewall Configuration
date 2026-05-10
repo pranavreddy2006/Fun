@@ -1,0 +1,271 @@
+# AIM
+
+To study and implement basic firewall configuration in Windows using both manual and automated methods. The experiment aims to block malicious IP addresses using Windows Defender Firewall and a Python script that automatically downloads and blocks known malicious IPs from an online threat intelligence source.
+
+---
+
+# PROCEDURE
+
+## Part A: Manual Firewall Configuration (Inbound Rule)
+
+### Step 1: Open Windows Defender Firewall
+
+1. Press `Windows + R`.
+2. Type `wf.msc` and press `Enter`.
+3. The **Windows Defender Firewall with Advanced Security** window opens.
+
+---
+
+### Step 2: Create a New Inbound Rule
+
+1. In the left panel, click **Inbound Rules**.
+2. In the right-side **Actions** panel, click **New Rule**.
+
+---
+
+### Step 3: Select Rule Type
+
+1. In the New Inbound Rule Wizard, select **Custom**.
+2. Click **Next**.
+
+---
+
+### Step 4: Program Selection
+
+1. Select **All Programs**.
+2. Click **Next**.
+
+---
+
+### Step 5: Protocol and Ports
+
+1. Keep all default settings unchanged.
+2. Click **Next**.
+
+---
+
+### Step 6: Configure Scope (IP Address to Block)
+
+1. Under **Which remote IP addresses does this rule apply to?**
+   select **These IP addresses**.
+
+2. Click **Add**.
+
+3. Enter the IP address to block.
+
+   Example:
+
+   ```
+   1.2.3.4
+   ```
+
+4. Click **OK**.
+
+5. Click **Next**.
+
+---
+
+### Step 7: Select Action
+
+1. Choose **Block the connection**.
+2. Click **Next**.
+
+---
+
+### Step 8: Select Profile
+
+1. Check all profiles:
+
+   * Domain
+   * Private
+   * Public
+2. Click **Next**.
+
+---
+
+### Step 9: Name the Rule
+
+1. Enter rule name:
+
+   ```
+   Manual_Block_IP
+   ```
+
+2. Click **Finish**.
+
+---
+
+### Step 10: Verify Rule Creation
+
+1. In **Inbound Rules**, search for:
+
+   ```
+   Manual_Block_IP
+   ```
+2. Confirm that the rule appears and is enabled.
+
+---
+
+# Part B: Automated Firewall Configuration Using Python
+
+## Step 1: Install Required Software
+
+Ensure the following are installed:
+
+* Python 3.x
+* PowerShell
+* Internet Connection
+* Visual Studio Code or any Python IDE
+
+---
+
+## Step 2: Create Python File
+
+1. Open Visual Studio Code or any editor.
+
+2. Create a new file named:
+
+   ```
+   firewall.py
+   ```
+
+3. Copy and paste the following code:
+
+```python
+import requests, csv, subprocess
+
+# source: Abuse CH
+response = requests.get(
+    "https://feodotracker.abuse.ch/downloads/ipblocklist.csv"
+).text
+
+rule = 'netsh advfirewall firewall delete rule name="BadIP"'
+subprocess.run(["PowerShell", "-Command", rule])
+
+mycsv = csv.reader(
+    filter(lambda x: not x.startswith("#"), response.splitlines())
+)
+
+for row in mycsv:
+    ip = row[1]
+
+    if ip != "dst_ip":
+        print("Added Rule to block:", ip)
+
+        rule = "netsh advfirewall firewall add rule name='BadIP' Dir=Out Action=Block RemoteIP=" + ip
+
+        subprocess.run(["PowerShell", "-Command", rule])
+```
+
+4. Save the file.
+
+---
+
+## Step 3: Open Command Prompt as Administrator
+
+1. Click Start Menu.
+2. Search for **Command Prompt**.
+3. Right-click it.
+4. Select **Run as Administrator**.
+
+---
+
+## Step 4: Navigate to Program Location
+
+Use `cd` command to open the folder containing `firewall.py`.
+
+Example:
+
+```bash
+cd C:\Users\YourName\Desktop
+```
+
+---
+
+## Step 5: Verify Python Installation
+
+Execute:
+
+```bash
+python --version
+```
+
+Expected output:
+
+```bash
+Python 3.x.x
+```
+
+---
+
+## Step 6: Install Required Python Library
+
+Execute:
+
+```bash
+python -m pip install requests
+```
+
+Wait until installation completes successfully.
+
+---
+
+## Step 7: Execute the Python Program
+
+Run the script using:
+
+```bash
+python firewall.py
+```
+
+---
+
+## Step 8: Observe Program Execution
+
+The terminal displays messages similar to:
+
+```bash
+Added Rule to block: 45.9.148.221
+Added Rule to block: 103.17.48.5
+Added Rule to block: 185.234.219.12
+```
+
+For every IP:
+
+* A firewall rule is created.
+* PowerShell displays success messages.
+
+---
+
+## Step 9: Verify Firewall Rules
+
+1. Open:
+
+   ```
+   Windows Defender Firewall with Advanced Security
+   ```
+2. Click **Outbound Rules**.
+3. Search for:
+
+   ```
+   BadIP
+   ```
+4. Verify that multiple rules containing blocked IP addresses are present.
+
+---
+
+# OBSERVATIONS
+
+1. Windows Defender Firewall successfully created manual inbound rules.
+2. The Python script downloaded malicious IP addresses from the Abuse.ch blocklist.
+3. Existing firewall rules named `BadIP` were deleted before creating new rules.
+4. Multiple outbound firewall rules were automatically generated.
+5. The command prompt displayed confirmation messages for each blocked IP.
+6. The blocked IP rules appeared under **Outbound Rules** in Windows Defender Firewall.
+7. The system successfully prevented outgoing communication to the listed malicious IP addresses.
+
+---
+
+# RESULT
+
+The experiment was successfully completed. Manual firewall configuration was performed to block a specific IP address using Windows Defender Firewall. An automated Python script was also executed successfully to download malicious IP addresses from an online source and create firewall rules dynamically. The blocked IP entries were verified in Windows Defender Firewall under Outbound Rules, demonstrating effective firewall-based network security implementation.
