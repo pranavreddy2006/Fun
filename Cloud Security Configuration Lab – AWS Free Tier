@@ -1,0 +1,511 @@
+# AIM
+
+To implement and configure basic cloud security controls using AWS Free Tier services including IAM, MFA, EC2 Security Groups, S3 bucket security, and CloudTrail logging.
+
+---
+
+# PROCEDURE
+
+## Step 1: Open AWS Management Console
+
+1. Open a web browser.
+2. Visit:
+
+[AWS Management Console](https://aws.amazon.com/console/?utm_source=chatgpt.com)
+
+3. Login using AWS root account credentials.
+
+Observation:
+
+* AWS Console dashboard opens successfully.
+
+---
+
+# Part A: Creating IAM User
+
+## Step 2: Open IAM Service
+
+1. In AWS Console search bar, search:
+
+   ```text id="x4m8qp"
+   IAM
+   ```
+
+2. Open:
+   Amazon Web Services IAM service.
+
+---
+
+## Step 3: Create IAM User
+
+1. In IAM dashboard, click:
+
+   ```text id="n7v2qw"
+   Users
+   ```
+
+2. Click:
+
+   ```text id="k4p9xm"
+   Create User
+   ```
+
+3. Enter username:
+
+```text id="r8w4zn"
+lab-user
+```
+
+4. Enable:
+
+   ```text id="u2t7pk"
+   Provide user access to AWS Management Console
+   ```
+
+5. Select:
+
+   ```text id="w6x3qe"
+   I want to create an IAM user
+   ```
+
+6. Set password or auto-generated password.
+
+Observation:
+
+* IAM user configuration page opens successfully.
+
+---
+
+## Step 4: Assign Permissions
+
+1. Select:
+
+   ```text id="p1v9mx"
+   Attach policies directly
+   ```
+
+2. Search:
+
+   ```text id="t4q8wr"
+   AdministratorAccess
+   ```
+
+3. Select:
+
+   ```text id="c7m2zp"
+   AdministratorAccess
+   ```
+
+4. Click:
+
+   ```text id="y5v1kd"
+   Next
+   ```
+
+5. Click:
+
+   ```text id="q9x4tn"
+   Create User
+   ```
+
+Observation:
+
+* IAM user `lab-user` is created successfully.
+
+---
+
+## Step 5: Login using IAM User
+
+1. Copy IAM user sign-in URL.
+2. Logout from root account.
+3. Login using:
+
+   * IAM username
+   * Password
+
+Observation:
+
+* IAM user login successful.
+
+---
+
+# Part B: Enabling Multi-Factor Authentication (MFA)
+
+## Step 6: Open Security Credentials
+
+1. In IAM dashboard, open:
+
+   ```text id="m3p8qw"
+   Users → lab-user
+   ```
+
+2. Navigate to:
+
+   ```text id="u6r2vx"
+   Security Credentials
+   ```
+
+---
+
+## Step 7: Assign MFA Device
+
+1. Click:
+
+   ```text id="h8t5qm"
+   Assign MFA Device
+   ```
+
+2. Select:
+
+   ```text id="k2v9pe"
+   Authenticator App
+   ```
+
+3. Open Google Authenticator app on mobile device.
+
+4. Scan QR code displayed on AWS console.
+
+5. Enter two generated MFA codes.
+
+6. Click:
+
+   ```text id="r7m4xd"
+   Add MFA
+   ```
+
+Observation:
+
+* MFA enabled successfully for IAM user.
+
+Inference:
+
+* MFA improves account security against unauthorized access.
+
+---
+
+# Part C: Configuring Security Group
+
+## Step 8: Open EC2 Service
+
+1. Search:
+
+   ```text id="p5w8tn"
+   EC2
+   ```
+
+2. Open EC2 dashboard.
+
+---
+
+## Step 9: Create Security Group
+
+1. In EC2 sidebar, select:
+
+   ```text id="v1x6qr"
+   Security Groups
+   ```
+
+2. Click:
+
+   ```text id="n4t9zp"
+   Create Security Group
+   ```
+
+---
+
+## Step 10: Configure Security Group
+
+Enter details:
+
+### Security Group Name
+
+```text id="m7q2vk"
+lab-secure-sg
+```
+
+### Description
+
+```text id="u3w8pm"
+Security group for lab instance
+```
+
+---
+
+## Step 11: Configure Inbound Rules
+
+1. Click:
+
+   ```text id="y8m4qe"
+   Add Rule
+   ```
+
+2. Configure:
+
+   * Type → SSH
+   * Protocol → TCP
+   * Port → 22
+   * Source → My IP
+
+Observation:
+
+* SSH access restricted to current IP address.
+
+---
+
+## Step 12: Configure Outbound Rules
+
+Keep default:
+
+* Allow All Traffic
+
+Click:
+
+```text id="f6p1zt"
+Create Security Group
+```
+
+Observation:
+
+* Security Group created successfully.
+
+---
+
+# Part D: Launching EC2 Instance
+
+## Step 13: Launch EC2 Instance
+
+1. In EC2 dashboard, click:
+
+   ```text id="k5x7mw"
+   Launch Instance
+   ```
+
+---
+
+## Step 14: Configure Instance Details
+
+### Name
+
+```text id="r2v9qn"
+lab-instance
+```
+
+### AMI
+
+Select:
+
+* Amazon Linux
+
+### Instance Type
+
+```text id="c4m8tp"
+t2.micro
+```
+
+Observation:
+
+* Free Tier eligible instance selected.
+
+---
+
+## Step 15: Create Key Pair
+
+1. Click:
+
+   ```text id="x7t2vd"
+   Create New Key Pair
+   ```
+
+2. Enter key pair name.
+
+3. Download `.pem` key file.
+
+Observation:
+
+* Key pair downloaded successfully.
+
+---
+
+## Step 16: Select Security Group
+
+1. Select:
+
+   ```text id="m1q5zr"
+   lab-secure-sg
+   ```
+
+---
+
+## Step 17: Launch Instance
+
+1. Click:
+
+   ```text id="n8v4pk"
+   Launch Instance
+   ```
+
+Observation:
+
+* EC2 instance launches successfully.
+
+---
+
+## Step 18: Verify EC2 Status
+
+1. Open:
+
+   ```text id="q3m7wx"
+   Instances
+   ```
+
+2. Check instance state.
+
+Observation:
+
+* Instance state changes to:
+
+  ```text id="t6x1qm"
+  Running
+  ```
+
+---
+
+# Part E: Creating Secure S3 Bucket
+
+## Step 19: Open S3 Service
+
+1. Search:
+
+   ```text id="v9p4ke"
+   S3
+   ```
+
+2. Open S3 dashboard.
+
+---
+
+## Step 20: Create S3 Bucket
+
+1. Click:
+
+   ```text id="h2w8zn"
+   Create Bucket
+   ```
+
+2. Enter bucket name:
+
+```text id="m4r7tx"
+lab-secure-bucket
+```
+
+---
+
+## Step 21: Configure Bucket Security
+
+1. Keep:
+
+   ```text id="u7q2vp"
+   Block Public Access → ON
+   ```
+
+2. Enable:
+
+   ```text id="x5m8pq"
+   Default Encryption
+   ```
+
+3. Select:
+
+   * SSE-S3 encryption
+
+4. Click:
+
+   ```text id="n7v2qw"
+   Create Bucket
+   ```
+
+Observation:
+
+* Secure S3 bucket created successfully.
+
+---
+
+# Part F: Enabling CloudTrail Logging
+
+## Step 22: Open CloudTrail Service
+
+1. Search:
+
+   ```text id="k4p9xm"
+   CloudTrail
+   ```
+
+2. Open CloudTrail dashboard.
+
+---
+
+## Step 23: Create CloudTrail Trail
+
+1. Click:
+
+   ```text id="r8w4zn"
+   Create Trail
+   ```
+
+2. Enter trail name:
+
+```text id="u2t7pk"
+lab-security-trail
+```
+
+---
+
+## Step 24: Configure Storage
+
+1. Select:
+
+   ```text id="w6x3qe"
+   Create New S3 Bucket
+   ```
+
+2. Enable:
+
+   ```text id="p1v9mx"
+   Log File Validation
+   ```
+
+3. Click:
+
+   ```text id="t4q8wr"
+   Create Trail
+   ```
+
+Observation:
+
+* CloudTrail logging enabled successfully.
+
+Inference:
+
+* CloudTrail records AWS account activity and API events.
+
+---
+
+# OBSERVATIONS
+
+1. AWS IAM user `lab-user` was created successfully.
+2. Administrator access policy was assigned to the IAM user.
+3. Multi-Factor Authentication (MFA) was enabled successfully.
+4. Security Group restricted SSH access to the user’s IP address.
+5. EC2 instance launched successfully using Amazon Linux AMI.
+6. Key pair authentication was configured successfully.
+7. S3 bucket was created with public access blocked.
+8. Server-side encryption was enabled for S3 bucket.
+9. CloudTrail logging was enabled successfully.
+10. AWS account activity logging and monitoring were configured successfully.
+11. Basic cloud security controls were implemented successfully.
+
+---
+
+# RESULT
+
+Cloud security configuration was successfully implemented using AWS Free Tier services. IAM user creation, MFA protection, Security Group configuration, EC2 deployment, secure S3 bucket creation, and CloudTrail logging were configured successfully to establish a secure cloud environment.
