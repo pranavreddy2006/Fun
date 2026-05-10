@@ -1,0 +1,420 @@
+# AIM
+
+To capture and analyze network packets using Wireshark and understand network forensics techniques for identifying protocols, communication patterns, and suspicious network activities.
+
+---
+
+# PROCEDURE
+
+## Step 1: Start Kali Linux
+
+1. Start the Kali Linux virtual machine.
+2. Log in to the system.
+
+---
+
+## Step 2: Open Terminal
+
+Press:
+
+```text id="m4v8qp"
+Ctrl + Alt + T
+```
+
+Observation:
+
+* Terminal window opens successfully.
+
+---
+
+## Step 3: Launch Wireshark
+
+Execute:
+
+```bash id="x7n2wd"
+wireshark &
+```
+
+Observation:
+
+* Wireshark graphical interface opens.
+
+---
+
+## Step 4: Select Network Interface
+
+1. In Wireshark home screen, locate available network interfaces.
+2. Select:
+
+```text id="p5r9tx"
+eth0
+```
+
+OR select the active network adapter showing traffic activity.
+
+3. Double-click the interface to start packet capture.
+
+Observation:
+
+* Live network packets begin appearing in Wireshark.
+
+---
+
+# Part A: Protocol Analysis
+
+## Step 5: Analyze TCP Packets
+
+In the Wireshark filter bar, enter:
+
+```text id="u1m6qe"
+tcp
+```
+
+Press Enter.
+
+Observation:
+
+* Only TCP packets are displayed.
+
+---
+
+## Step 6: Analyze UDP Packets
+
+Clear previous filter.
+
+Enter:
+
+```text id="k8v3pn"
+udp
+```
+
+Press Enter.
+
+Observation:
+
+* Only UDP packets are displayed.
+
+---
+
+## Step 7: Analyze HTTP Packets
+
+Clear previous filter.
+
+Enter:
+
+```text id="r4x7mw"
+http
+```
+
+Press Enter.
+
+Observation:
+
+* HTTP requests and responses are displayed.
+
+---
+
+# Part B: Applying Packet Filters
+
+## Step 8: Filter Specific IP Address
+
+In filter bar, enter:
+
+```text id="y6t2qv"
+ip.addr == 192.168.0.161
+```
+
+Press Enter.
+
+Observation:
+
+* Only packets related to the specified IP address appear.
+
+---
+
+## Step 9: Filter Source IP Address
+
+Enter:
+
+```text id="f3m8wp"
+ip.src == 192.168.0.161
+```
+
+Press Enter.
+
+Observation:
+
+* Only packets originating from the specified source IP are displayed.
+
+---
+
+# Part C: Following TCP Stream
+
+## Step 10: Follow TCP Stream
+
+1. Select any TCP packet.
+2. Right-click the packet.
+3. Select:
+
+```text id="v9q5xe"
+Follow → TCP Stream
+```
+
+Observation:
+
+* Full TCP conversation between two devices is reconstructed.
+
+---
+
+## Step 11: Analyze TCP Stream
+
+Observe:
+
+* Red text → Data from one device
+* Blue text → Data from another device
+
+Also observe:
+
+* Binary characters
+* Readable application data
+
+Observation:
+
+* Complete communication stream is visible.
+
+---
+
+## Step 12: Observe TCP Flags
+
+Inside TCP stream or packet details, observe flags such as:
+
+```text id="n2w7pk"
+[SYN]
+[ACK]
+[PSH]
+[FIN]
+```
+
+Meaning:
+
+| Flag | Purpose                |
+| ---- | ---------------------- |
+| SYN  | Connection start       |
+| ACK  | Acknowledgement        |
+| PSH  | Data transfer          |
+| FIN  | Connection termination |
+
+Observation:
+
+* Full TCP session lifecycle can be analyzed.
+
+---
+
+# Part D: Identifying Suspicious Traffic
+
+## Step 13: Open New Terminal
+
+Open another terminal window.
+
+---
+
+## Step 14: Perform SYN Scan using Nmap
+
+Execute:
+
+```bash id="q7v1mz"
+nmap -sS 192.168.0.156
+```
+
+Replace IP with Windows system IP address.
+
+Explanation:
+
+* `-sS` performs SYN (Stealth) scan.
+
+Observation:
+
+* Nmap scans open ports on target system.
+
+---
+
+## Step 15: Detect Port Scanning Activity
+
+Return to Wireshark.
+
+Apply filter:
+
+```text id="c5x9tr"
+tcp.flags.syn == 1 && tcp.flags.ack == 0
+```
+
+Press Enter.
+
+Observation:
+
+* Multiple SYN packets appear.
+* Different destination ports are targeted.
+* Incomplete TCP connections are visible.
+
+Additional observations:
+
+* Source address → Kali Linux
+* Destination address → Windows system
+
+Inference:
+
+* This behavior indicates port scanning activity.
+
+---
+
+# Part E: Wireshark Statistics Analysis
+
+## Step 16: Open Capture File Properties
+
+In Wireshark menu:
+
+```text id="m8q2wd"
+Statistics → Capture File Properties
+```
+
+Observation:
+
+* Summary of captured traffic appears.
+
+---
+
+## Step 17: View Resolved Addresses
+
+Navigate to:
+
+```text id="u4p7xn"
+Statistics → Resolved Addresses
+```
+
+Observation:
+
+* IP and MAC addresses are converted into readable names.
+
+---
+
+## Step 18: View Protocol Hierarchy
+
+Navigate to:
+
+```text id="k1v9qm"
+Statistics → Protocol Hierarchy
+```
+
+Observation:
+
+* Protocol usage statistics are displayed.
+* Packet counts and percentages appear.
+
+---
+
+## Step 19: View Conversations
+
+Navigate to:
+
+```text id="w6x3rp"
+Statistics → Conversations
+```
+
+Observation:
+
+* Communication between endpoints is displayed.
+
+Information includes:
+
+* Source address
+* Destination address
+* Packet count
+* Data transferred
+
+---
+
+## Step 20: View Packet Length Statistics
+
+Navigate to:
+
+```text id="t9m5vk"
+Statistics → Packet Length
+```
+
+Observation:
+
+* Packet size distribution appears.
+
+---
+
+## Step 21: View Endpoints
+
+Navigate to:
+
+```text id="p2r8wx"
+Statistics → Endpoints
+```
+
+Observation:
+
+* Individual devices involved in communication are listed.
+
+Information includes:
+
+* IP addresses
+* MAC addresses
+* Packets sent/received
+* Data usage
+
+---
+
+## Step 22: View I/O Graphs
+
+Navigate to:
+
+```text id="g7v1qn"
+Statistics → I/O Graphs
+```
+
+Observation:
+
+* Graphical representation of traffic over time appears.
+
+Traffic statistics include:
+
+* Packets per second
+* Bytes transferred
+* Network activity trends
+
+---
+
+## Step 23: Stop Packet Capture
+
+1. Click the red Stop button in Wireshark toolbar.
+
+Observation:
+
+* Packet capture stops successfully.
+
+---
+
+# OBSERVATIONS
+
+1. Wireshark launched successfully in Kali Linux.
+2. Live packet capture was performed using the `eth0` interface.
+3. TCP, UDP, and HTTP traffic were filtered and analyzed successfully.
+4. IP-based packet filtering displayed targeted network traffic.
+5. TCP Stream reconstruction showed complete communication between endpoints.
+6. TCP flags such as SYN, ACK, PSH, and FIN were observed.
+7. Nmap SYN scan generated suspicious traffic patterns.
+8. Wireshark detected multiple SYN packets indicating port scanning activity.
+9. Protocol Hierarchy displayed protocol distribution statistics.
+10. Conversations and Endpoints statistics identified communicating devices.
+11. Packet Length and I/O Graphs displayed traffic characteristics and trends.
+12. Network forensic analysis successfully identified communication behavior and suspicious activity.
+
+---
+
+# RESULT
+
+Network packets were successfully captured and analyzed using Wireshark in Kali Linux. Different protocols, communication patterns, TCP streams, and suspicious network activities such as SYN port scanning were identified and analyzed successfully using packet filters and statistical analysis tools.
