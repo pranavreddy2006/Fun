@@ -1,0 +1,433 @@
+# AIM
+
+To perform a security audit and risk assessment on a Windows system in order to identify security vulnerabilities, evaluate associated risks, and recommend mitigation strategies to improve overall system security.
+
+---
+
+# PROCEDURE
+
+## Step 1: Start Windows System
+
+1. Start the Windows 10/11 computer.
+2. Log in using administrator credentials.
+
+---
+
+# Part A: Collecting System Information
+
+## Step 2: Open System Information Tool
+
+1. Press:
+
+```text id="x4m8qp"
+Windows + R
+```
+
+2. Type:
+
+```text id="n7v2qw"
+msinfo32
+```
+
+3. Press Enter.
+
+Observation:
+
+* System Information window opens.
+
+---
+
+## Step 3: Record System Details
+
+Observe and note:
+
+* Operating System version
+* System type
+* Processor
+* BIOS mode
+* Secure Boot status
+
+Example observations:
+
+* Windows 11 Home Single Language
+* 64-bit operating system
+* Intel i5 processor
+* UEFI architecture
+* Secure Boot enabled
+
+Inference:
+
+* Secure Boot helps prevent unauthorized boot loaders and improves startup security.
+
+---
+
+# Part B: Checking Windows Updates
+
+## Step 4: Open Windows Update
+
+1. Open:
+
+   ```text id="k4p9xm"
+   Settings
+   ```
+
+2. Navigate to:
+
+```text id="r8w4zn"
+Windows Update
+```
+
+3. Click:
+
+```text id="u2t7pk"
+Check for updates
+```
+
+Observation:
+
+* Pending or installed updates are displayed.
+
+Inference:
+
+* Missing updates may expose the system to known vulnerabilities.
+
+---
+
+# Part C: Checking Firewall Security
+
+## Step 5: Open Firewall Settings
+
+1. Search:
+
+```text id="w6x3qe"
+Windows Defender Firewall
+```
+
+2. Open:
+
+```text id="p1v9mx"
+Turn Windows Defender Firewall on or off
+```
+
+Observation:
+
+* Firewall status is displayed.
+
+Possible observation:
+
+* Firewall managed by third-party antivirus such as Kaspersky.
+
+Inference:
+
+* Firewall protects the system from unauthorized network access.
+
+---
+
+# Part D: Checking Antivirus Protection
+
+## Step 6: Open Windows Security
+
+1. Search:
+
+```text id="t4q8wr"
+Windows Security
+```
+
+2. Open:
+
+   ```text id="c7m2zp"
+   Virus & Threat Protection
+   ```
+
+---
+
+## Step 7: Verify Antivirus Status
+
+Check:
+
+* Real-time protection
+* Virus definitions
+* Last scan time
+* Threat history
+
+Observation:
+
+* Antivirus active and no current threats detected.
+
+Inference:
+
+* Antivirus protects against malware and phishing attacks.
+
+---
+
+# Part E: Checking Password and Account Security
+
+## Step 8: Open Sign-In Options
+
+1. Open:
+
+   ```text id="y5v1kd"
+   Settings → Accounts → Sign-in options
+   ```
+
+---
+
+## Step 9: Analyze Authentication Methods
+
+Check:
+
+* Password enabled
+* PIN enabled
+* Windows Hello availability
+
+Observation:
+
+* Multiple authentication methods are configured.
+
+Inference:
+
+* Strong authentication improves account security.
+
+---
+
+# Part F: Checking Installed Applications
+
+## Step 10: Open Installed Applications
+
+1. Navigate to:
+
+```text id="q9x4tn"
+Settings → Apps → Installed apps
+```
+
+---
+
+## Step 11: Analyze Installed Software
+
+Check for:
+
+* Unknown applications
+* Cracked software
+* Unauthorized tools
+
+Observation:
+
+* Installed applications list reviewed successfully.
+
+Inference:
+
+* Untrusted applications may introduce malware or security risks.
+
+---
+
+# Part G: Checking Startup Programs
+
+## Step 12: Open Task Manager
+
+Press:
+
+```text id="m3p8qw"
+Ctrl + Shift + Esc
+```
+
+---
+
+## Step 13: Open Startup Tab
+
+1. Navigate to:
+
+   ```text id="u6r2vx"
+   Startup
+   ```
+
+2. Review startup applications.
+
+Observation:
+
+* Some applications start automatically during boot.
+
+---
+
+## Step 14: Disable Unnecessary Startup Programs
+
+1. Select unnecessary applications.
+2. Click:
+
+   ```text id="h8t5qm"
+   Disable
+   ```
+
+Observation:
+
+* Startup applications disabled successfully.
+
+Inference:
+
+* Reduces attack surface and improves performance.
+
+---
+
+# Part H: Checking Network Security
+
+## Step 15: Open Network Settings
+
+Navigate to:
+
+```text id="k2v9pe"
+Settings → Network & Internet
+```
+
+---
+
+## Step 16: Analyze Network Connection
+
+Observe:
+
+* Wi-Fi connection
+* Connection status
+* Network profile
+
+Example:
+
+* Connected to Wi-Fi
+* Network type: Public
+
+Observation:
+
+* Public network profile restricts device visibility.
+
+Inference:
+
+* Public profile improves security in untrusted environments.
+
+---
+
+# Part I: Checking Browser Security
+
+## Step 17: Open Browser Security Settings
+
+In Chrome or Edge:
+
+1. Open:
+
+   ```text id="r7m4xd"
+   Settings → Privacy & Security
+   ```
+
+---
+
+## Step 18: Verify Browser Protection
+
+Check:
+
+* Safe Browsing enabled
+* Unknown extensions removed
+
+Observation:
+
+* Browser security protections are enabled.
+
+Inference:
+
+* Safe Browsing protects against phishing and malicious websites.
+
+---
+
+# Part J: Checking Data Backup
+
+## Step 19: Open Backup Settings
+
+Search:
+
+```text id="p5w8tn"
+Backup settings
+```
+
+---
+
+## Step 20: Verify Backup Configuration
+
+Check:
+
+* OneDrive backup
+* External backup configuration
+
+Observation:
+
+* Backup may or may not be configured.
+
+Inference:
+
+* Lack of backup increases risk of permanent data loss.
+
+---
+
+# Part K: Performing Risk Assessment
+
+## Step 21: Prepare Risk Assessment Table
+
+| Asset          | Threat              | Vulnerability  | Risk Level | Solution               |
+| -------------- | ------------------- | -------------- | ---------- | ---------------------- |
+| Personal Files | Data Loss           | No Backup      | High       | Enable OneDrive        |
+| System         | Malware             | Unknown Apps   | High       | Remove suspicious apps |
+| Network        | Hacking             | Public Network | Medium     | Use Private Network    |
+| Account        | Unauthorized Access | Weak Password  | High       | Use strong password    |
+
+Observation:
+
+* Risks and mitigation strategies identified successfully.
+
+---
+
+# Part L: Security Recommendations
+
+## Step 22: Recommend Technical Controls
+
+Suggested controls:
+
+* Enable firewall
+* Enable antivirus
+* Install regular updates
+
+---
+
+## Step 23: Recommend Administrative Controls
+
+Suggested controls:
+
+* Use strong passwords
+* Avoid unknown downloads
+
+---
+
+## Step 24: Recommend User Awareness Practices
+
+Suggested practices:
+
+* Avoid phishing links
+* Practice safe browsing
+* Verify suspicious emails and websites
+
+---
+
+# OBSERVATIONS
+
+1. System information was collected successfully using `msinfo32`.
+2. Secure Boot was enabled on the system.
+3. Pending Windows updates were identified.
+4. Firewall protection was active through Windows Defender or third-party antivirus.
+5. Antivirus protection was functioning correctly with real-time protection enabled.
+6. Strong authentication methods such as password and PIN were configured.
+7. Installed applications were reviewed for suspicious software.
+8. Startup programs were analyzed successfully.
+9. Public network profile restricted device visibility on the network.
+10. Browser Safe Browsing protection was enabled.
+11. Backup configuration was missing or incomplete.
+12. Multiple system security risks and vulnerabilities were identified.
+13. Appropriate mitigation strategies and recommendations were prepared.
+
+---
+
+# RESULT
+
+The security audit and risk assessment of the Windows system were successfully performed. Potential vulnerabilities including missing backups, startup risks, network exposure, and configuration weaknesses were identified, and suitable mitigation strategies were recommended to improve overall system security.
