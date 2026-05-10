@@ -1,0 +1,282 @@
+# AIM
+
+To analyze a suspicious email using EML Analyzer and VirusTotal in order to identify phishing characteristics based on email headers, authentication results, sender information, and suspicious URLs.
+
+---
+
+# PROCEDURE
+
+## Step 1: Prepare Required Tools
+
+Ensure the following are available:
+
+* Internet connection
+* Web browser
+* Sample phishing email file:
+
+  ```text id="u3g2pi"
+  2020-05-05-phishing-email-example-01.eml
+  ```
+* Access to:
+
+  * EML Analyzer
+  * VirusTotal
+
+---
+
+# Part A: Email Analysis Using EML Analyzer
+
+## Step 2: Open EML Analyzer
+
+1. Open a web browser.
+2. Navigate to the EML Analyzer website.
+3. Locate the file upload option.
+
+---
+
+## Step 3: Upload the EML File
+
+1. Click **Upload File** or **Choose File**.
+2. Select the file:
+
+   ```text id="r4glk0"
+   2020-05-05-phishing-email-example-01.eml
+   ```
+3. Click **Analyze** or **Submit**.
+
+---
+
+## Step 4: Observe General Email Information
+
+After analysis, observe the displayed email details:
+
+### Subject
+
+```text id="g4vuh6"
+Warning: Final Notice
+```
+
+### Sender Information
+
+```text id="5k8bqb"
+malware-traffic-analysis.net Support <sues@nnwifi.com>
+```
+
+### Recipient
+
+```text id="zq8p2j"
+brad@malware-traffic-analysis.net
+```
+
+### Content Type
+
+```text id="9n9r6z"
+text/html
+```
+
+### Message-ID Status
+
+```text id="4r3k2m"
+Missing
+```
+
+---
+
+## Step 5: Analyze Email Headers
+
+Locate the **Header Analysis** section and record the following details:
+
+### Sender IP Address
+
+```text id="eqg7e7"
+94.100.31.27
+```
+
+### Reverse DNS
+
+```text id="jlwmnh"
+94-100-31-27.static.hvvc.us
+```
+
+### Mail Server
+
+```text id="n4wgh6"
+mail.nnwifi.com
+```
+
+---
+
+## Step 6: Verify Authentication Results
+
+Check the email authentication mechanisms:
+
+### SPF Result
+
+```text id="bnw8w5"
+Failed
+```
+
+### DKIM Result
+
+```text id="tb34i6"
+Not signed
+```
+
+### DMARC Result
+
+```text id="s6imja"
+Not aligned
+```
+
+---
+
+# Part B: IP Reputation Analysis Using VirusTotal
+
+## Step 7: Open VirusTotal
+
+1. Open a new browser tab.
+2. Go to VirusTotal website.
+
+---
+
+## Step 8: Search the Sender IP
+
+1. Enter the IP address:
+
+   ```text id="f4d0k5"
+   94.100.31.27
+   ```
+2. Click **Search** or press Enter.
+
+---
+
+## Step 9: Observe VirusTotal Results
+
+Record the following information:
+
+### Detection Ratio
+
+```text id="9dhgt1"
+1 / 93 vendors flagged as malicious
+```
+
+### IP Location
+
+```text id="4l5r3z"
+Netherlands
+```
+
+### ASN Information
+
+```text id="98h8e8"
+AS29802 (HVC-AS)
+```
+
+Interpretation:
+
+* The IP is not heavily blacklisted.
+* One security vendor marked it as suspicious.
+
+---
+
+# Part C: Suspicious URL Identification
+
+## Step 10: Extract URL from Email Body
+
+From the EML Analyzer results, identify suspicious links present in the email.
+
+Suspicious URL found:
+
+```text id="67mzmg"
+https://servervirto.com.co/ed/trn/update?email=brad@malware-traffic-analysis.net
+```
+
+---
+
+## Step 11: Analyze Why the URL is Suspicious
+
+Observe the following phishing indicators:
+
+1. The URL domain does not match the sender domain:
+
+   * Sender domain:
+
+     ```text id="4kl6gv"
+     nnwifi.com
+     ```
+   * URL domain:
+
+     ```text id="9u0jwe"
+     servervirto.com.co
+     ```
+
+2. Uses foreign domain extension:
+
+   ```text id="4xbz1y"
+   .com.co
+   ```
+
+3. Attempts credential harvesting by requesting ownership confirmation.
+
+---
+
+# OBSERVATIONS
+
+1. The email used an urgent subject line:
+
+   ```text id="50mvgt"
+   Warning: Final Notice
+   ```
+
+2. The display name attempted to impersonate a trusted organization:
+
+   ```text id="njlwm2"
+   malware-traffic-analysis.net Support
+   ```
+
+3. The actual sender domain:
+
+   ```text id="sy5r9f"
+   nnwifi.com
+   ```
+
+   did not match the impersonated organization.
+
+4. SPF authentication failed, indicating sender verification problems.
+
+5. DKIM was not configured and DMARC was not aligned.
+
+6. The email lacked a Message-ID, which is unusual for legitimate emails.
+
+7. The email content type was HTML-only, commonly used in phishing attacks.
+
+8. A suspicious external URL was embedded in the email body.
+
+9. VirusTotal reported the sender IP as suspicious by one vendor.
+
+10. Multiple phishing indicators were identified during analysis.
+
+---
+
+# RESULTS
+
+The suspicious email was successfully analyzed using EML Analyzer and VirusTotal. Several phishing indicators were identified, including SPF failure, missing Message-ID, mismatched sender domain, suspicious external links, and partial blacklist detection of the sender IP. Based on the technical analysis and observed malicious characteristics, the email was classified as a phishing email.
+
+---
+
+# ANSWERS TO GIVEN QUESTIONS
+
+| Question                         | Answer                                                                             |
+| -------------------------------- | ---------------------------------------------------------------------------------- |
+| Full sender email address        | `sues@nnwifi.com`                                                                  |
+| Domain used to send the email    | `nnwifi.com`                                                                       |
+| Sender’s IP address              | `94.100.31.27`                                                                     |
+| Is sender IP blacklisted?        | Yes (1/93 vendors flagged it as malicious)                                         |
+| SPF authentication result        | Fail                                                                               |
+| One suspicious URL in email body | `https://servervirto.com.co/ed/trn/update?email=brad@malware-traffic-analysis.net` |
+
+---
+
+# FINAL VERDICT
+
+The analyzed email is classified as **PHISHING** because it contains multiple phishing indicators such as fake sender identity, failed authentication checks, suspicious external links, missing email headers, and partially malicious IP reputation.
