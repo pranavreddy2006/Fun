@@ -1,0 +1,703 @@
+# EXPERIMENT NAME
+
+Testing Authentication Weaknesses and Session Management using Kali Linux and DVWA
+
+---
+
+# AIM
+
+To identify and analyze authentication weaknesses and session management vulnerabilities in DVWA using Kali Linux, and to understand how improper authentication and insecure session handling can lead to unauthorized access.
+
+---
+
+# REQUIREMENTS
+
+## Software
+
+* Kali Linux
+* DVWA (Damn Vulnerable Web Application)
+* Firefox Browser
+* Apache Server
+* MySQL/MariaDB
+
+## Hardware
+
+* Computer System
+* Lab Environment with Internet Disabled
+
+---
+
+# THEORY
+
+## Authentication Weakness
+
+Authentication ensures that only authorized users can access the system. Weak authentication occurs because of:
+
+* Weak passwords
+* Default credentials
+* No account lockout
+* Unlimited login attempts
+* Brute force vulnerability
+
+---
+
+## Session Management
+
+Session management maintains user identity using session IDs stored in cookies.
+
+Improper session handling may cause:
+
+* Session hijacking
+* Session fixation
+* Session reuse
+* Insecure cookies
+* Unauthorized access
+
+---
+
+# PROCEDURE
+
+# PART A: Launching DVWA
+
+## Step 1: Open Kali Linux
+
+1. Start Kali Linux.
+2. Log in to the system.
+
+---
+
+## Step 2: Open Terminal
+
+1. Open Terminal in Kali Linux.
+
+---
+
+## Step 3: Start Apache Service
+
+Execute:
+
+```bash id="a1m9xt"
+sudo service apache2 start
+```
+
+Observation:
+
+* Apache web server starts successfully.
+
+---
+
+## Step 4: Start MySQL Service
+
+Execute:
+
+```bash id="k7v4qp"
+sudo service mysql start
+```
+
+Observation:
+
+* MySQL/MariaDB service starts successfully.
+
+---
+
+## Step 5: Open DVWA in Browser
+
+1. Open Firefox browser.
+2. Enter:
+
+```text id="n5c2dw"
+http://127.0.0.1/dvwa
+```
+
+Observation:
+
+* DVWA login page appears.
+
+---
+
+## Step 6: Login to DVWA
+
+Enter default credentials:
+
+```text id="w3r8jm"
+Username: admin
+Password: password
+```
+
+Click:
+
+```text id="u4x1ke"
+Login
+```
+
+---
+
+## Step 7: Set Security Level
+
+1. Navigate to:
+
+   ```text id="q6v2sh"
+   DVWA Security
+   ```
+
+2. Select:
+
+   ```text id="m9e5fp"
+   LOW
+   ```
+
+3. Click:
+
+   ```text id="r2d7zn"
+   Submit
+   ```
+
+---
+
+# PART B: Testing Authentication Weaknesses
+
+# Experiment 1: Weak Password Authentication
+
+## Step 8: Open Brute Force Module
+
+Navigate to:
+
+```text id="x7p4cb"
+DVWA → Vulnerabilities → Brute Force
+```
+
+---
+
+## Step 9: Test Weak Credentials
+
+Enter:
+
+```text id="f5m8qa"
+Username: admin
+Password: password
+```
+
+Click:
+
+```text id="t1v9ew"
+Login
+```
+
+Observation:
+
+* Login succeeds successfully.
+* Indicates weak/default password authentication.
+
+---
+
+# Experiment 2: Manual Brute Force Attack
+
+## Step 10: Keep Username Constant
+
+In the Username field, enter:
+
+```text id="y3k6dz"
+admin
+```
+
+Do not change the username.
+
+---
+
+## Step 11: Try Multiple Passwords Manually
+
+### Attempt 1
+
+Enter:
+
+```text id="z9m2qx"
+Username: admin
+Password: admin
+```
+
+Click Login.
+
+Observation:
+
+* Login fails.
+
+---
+
+### Attempt 2
+
+Enter:
+
+```text id="g7w4pv"
+Username: admin
+Password: 123456
+```
+
+Click Login.
+
+Observation:
+
+* Login fails.
+
+---
+
+### Attempt 3
+
+Enter:
+
+```text id="j1f8mx"
+Username: admin
+Password: password
+```
+
+Click Login.
+
+Observation:
+
+* Login succeeds.
+
+---
+
+## Step 12: Analyze Brute Force Vulnerability
+
+Observe the following:
+
+* DVWA does not block repeated attempts.
+* No account lockout occurs.
+* Unlimited password attempts are allowed.
+
+Conclusion:
+
+* The application is vulnerable to brute force attacks.
+
+---
+
+# PART C: Testing Session Management Vulnerabilities
+
+# Experiment 3: Session ID Analysis
+
+## Step 13: Open Browser Developer Tools
+
+1. While logged into DVWA:
+
+   * Right click anywhere on webpage
+   * Click:
+
+     ```text id="c4r7jt"
+     Inspect
+     ```
+
+2. Open:
+
+   ```text id="n8v1pk"
+   Storage → Cookies
+   ```
+
+---
+
+## Step 14: Observe Session Cookie
+
+Locate:
+
+```text id="s6x3me"
+PHPSESSID
+```
+
+Example:
+
+```text id="p2f9wd"
+PHPSESSID = 5f6194766020dcaa2c906358cbd2941b
+```
+
+Observation:
+
+* Session ID is visible in plain text.
+* Session cookie is not encrypted.
+
+---
+
+# Experiment 4: Session Hijacking
+
+## Important Conditions
+
+* DVWA Security Level = LOW
+* Victim remains logged in
+
+---
+
+## Step 15: Create Victim Session
+
+1. Open Firefox.
+2. Go to:
+
+```text id="h5t2vn"
+http://127.0.0.1/dvwa
+```
+
+3. Login:
+
+```text id="m3y8fk"
+Username: admin
+Password: password
+```
+
+4. Do NOT logout.
+
+This browser becomes the victim session.
+
+---
+
+## Step 16: Copy Victim Session ID
+
+1. Right click → Inspect
+
+2. Open:
+
+   ```text id="r8w4jp"
+   Storage → Cookies
+   ```
+
+3. Select:
+
+```text id="v1q6ce"
+http://127.0.0.1
+```
+
+4. Copy the value of:
+
+```text id="u7z9md"
+PHPSESSID
+```
+
+Example:
+
+```text id="l2p5xr"
+a8c9f7e3d4b1...
+```
+
+---
+
+## Step 17: Open Attacker Browser
+
+1. Press:
+
+```text id="d4f8qs"
+Ctrl + Shift + P
+```
+
+2. Firefox Private Window opens.
+
+3. Do NOT login.
+
+---
+
+## Step 18: Replace Session ID
+
+1. In Private Window open:
+
+```text id="g6v3pw"
+http://127.0.0.1/dvwa
+```
+
+2. Right click → Inspect
+
+3. Open:
+
+   ```text id="n1x7mt"
+   Storage → Cookies
+   ```
+
+4. Replace attacker browser `PHPSESSID` value with copied victim session ID.
+
+5. Press Enter.
+
+---
+
+## Step 19: Refresh Page
+
+Press:
+
+```text id="w8k2qa"
+F5
+```
+
+Observation:
+
+* Attacker gains admin access without entering credentials.
+* Session hijacking is successful.
+
+---
+
+# Experiment 5: Session Fixation
+
+## Important Conditions
+
+* DVWA Security Level = LOW
+* Use same browser window
+* Do NOT use private window
+
+---
+
+## Step 20: Open DVWA Without Login
+
+1. Open Firefox.
+2. Navigate to:
+
+```text id="q9f6mb"
+http://127.0.0.1/dvwa/
+```
+
+3. Stay on login page.
+
+---
+
+## Step 21: Record Session ID Before Login
+
+1. Right click → Inspect
+
+2. Open:
+
+   ```text id="c5t1zr"
+   Storage → Cookies
+   ```
+
+3. Observe:
+
+```text id="k8v3xn"
+PHPSESSID
+```
+
+Example:
+
+```text id="x7d4pm"
+PHPSESSID = 5f6194766020dcaa2c906358cbd2941b
+```
+
+---
+
+## Step 22: Login Without Closing Browser
+
+In same browser window enter:
+
+```text id="m4q8wf"
+Username: admin
+Password: password
+```
+
+Click Login.
+
+---
+
+## Step 23: Check Session ID Again
+
+1. Open:
+
+   ```text id="t2p6ye"
+   Inspect → Storage → Cookies
+   ```
+
+2. Compare session IDs.
+
+---
+
+## Step 24: Analyze Session Fixation
+
+### Vulnerable Case
+
+If:
+
+```text id="j7m1kv"
+Before Login PHPSESSID = 5f6194766020dcaa2c906358cbd2941b
+After Login PHPSESSID = 5f6194766020dcaa2c906358cbd2941b
+```
+
+Observation:
+
+* Same session ID remains after login.
+* Session fixation vulnerability exists.
+
+---
+
+### Secure Case
+
+If:
+
+```text id="p9x4zn"
+Before Login PHPSESSID = 5f6194766020dcaa2c906358cbd2941b
+After Login PHPSESSID = be2d584526b42fef6742d5cf95ce008f
+```
+
+Observation:
+
+* Session ID regenerated successfully.
+* Session fixation prevented.
+
+---
+
+# Experiment 6: Improper Logout / Session Reuse
+
+## Important Conditions
+
+* DVWA Security Level = LOW
+
+---
+
+## Step 25: Login Normally
+
+1. Open Firefox.
+2. Navigate to:
+
+```text id="s4w7qc"
+http://127.0.0.1/dvwa/
+```
+
+3. Login using:
+
+```text id="b2m9ev"
+Username: admin
+Password: password
+```
+
+---
+
+## Step 26: Copy Session ID
+
+1. Right click → Inspect
+
+2. Open:
+
+   ```text id="f8p3xt"
+   Storage → Cookies
+   ```
+
+3. Copy:
+
+```text id="h6v1dr"
+PHPSESSID
+```
+
+Example:
+
+```text id="n5x7kq"
+be2d584526b42fef6742d5cf95ce008f
+```
+
+Take Screenshot:
+
+* PHPSESSID before logout
+
+---
+
+## Step 27: Logout from DVWA
+
+1. Click:
+
+   ```text id="u9c4mb"
+   Logout
+   ```
+
+Observation:
+
+* User returns to login page.
+
+---
+
+## Step 28: Open Private Window
+
+Press:
+
+```text id="m2k7vp"
+Ctrl + Shift + P
+```
+
+---
+
+## Step 29: Reuse Old Session ID
+
+1. Open:
+
+```text id="q3x8td"
+http://127.0.0.1/dvwa/
+```
+
+2. Open:
+
+   ```text id="g5r1zn"
+   Inspect → Storage → Cookies
+   ```
+
+3. Paste previously copied old `PHPSESSID`.
+
+4. Press Enter.
+
+---
+
+## Step 30: Access Internal DVWA Page
+
+In address bar enter:
+
+```text id="y1p4vw"
+http://127.0.0.1/dvwa/index.php
+```
+
+OR
+
+```text id="r6m9xe"
+http://127.0.0.1/dvwa/vulnerabilities/brute/
+```
+
+Do NOT login again.
+
+---
+
+## Step 31: Observe Result
+
+Observation:
+
+* User gains access without authentication.
+* Old session ID still works.
+* Logout failed to destroy active session.
+
+Conclusion:
+
+* Improper logout vulnerability exists.
+
+---
+
+# OBSERVATIONS
+
+| Test Case           | Observation |
+| ------------------- | ----------- |
+| Weak Password Login | Successful  |
+| Brute Force Attack  | Allowed     |
+| Session ID Exposure | Found       |
+| Session Hijacking   | Possible    |
+| Session Fixation    | Observed    |
+| Improper Logout     | Observed    |
+
+---
+
+# RESULT
+
+Authentication and session management vulnerabilities were successfully identified and analyzed in DVWA using Kali Linux. Weak authentication controls, brute force vulnerability, session hijacking, session fixation, and improper logout handling were demonstrated successfully.
+
+---
+
+# CONCLUSION
+
+This experiment demonstrated that weak authentication mechanisms and insecure session management can lead to unauthorized access and account compromise. Proper password policies, session regeneration, secure cookie handling, account lockout mechanisms, and proper logout implementation are necessary to protect web applications against authentication and session-based attacks.
+
+---
+
+# PREVENTION TECHNIQUES
+
+1. Strong Password Policies
+2. Multi-Factor Authentication (MFA)
+3. Account Lockout Mechanisms
+4. Secure Session ID Generation
+5. Session Regeneration after Login
+6. Secure and HttpOnly Cookies
+7. Session Timeout
+8. Proper Logout Session Destruction
+9. Use HTTPS for Secure Communication
+
+---
