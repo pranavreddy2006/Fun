@@ -1,9 +1,3 @@
-# EXPERIMENT NAME
-
-Testing Authentication Weaknesses and Session Management using Kali Linux and DVWA
-
----
-
 # AIM
 
 To identify and analyze authentication weaknesses and session management vulnerabilities in DVWA using Kali Linux, and to understand how improper authentication and insecure session handling can lead to unauthorized access.
