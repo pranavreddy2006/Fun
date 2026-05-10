@@ -1,0 +1,482 @@
+# AIM
+
+To analyse Android application network traffic and permissions by intercepting HTTP and HTTPS requests using an Android Emulator (AVD) and Burp Suite.
+
+---
+
+# PROCEDURE
+
+## Step 1: Install Required Software
+
+Ensure the following software is installed on the system:
+
+* Android Studio
+* Android Emulator (AVD Manager)
+* Burp Suite
+* ADB (Android Debug Bridge)
+* Google Chrome browser inside emulator
+* Internet connection
+
+---
+
+# Part A: Creating Android Virtual Device (AVD)
+
+## Step 2: Open Android Studio
+
+1. Launch Android Studio.
+2. Wait for Android Studio home screen to load.
+
+---
+
+## Step 3: Open AVD Manager
+
+1. In Android Studio, click:
+
+   ```text id="x4m7qw"
+   Tools → Device Manager (AVD Manager)
+   ```
+
+2. Click:
+
+   ```text id="k9v2pe"
+   Create Device
+   ```
+
+---
+
+## Step 4: Select Virtual Device
+
+Choose any Android device such as:
+
+* Pixel 2
+* Pixel 9
+
+Click:
+
+```text id="n5t8rx"
+Next
+```
+
+---
+
+## Step 5: Select Android System Image
+
+1. Choose an Android version/API image.
+2. Download the image if not already installed.
+3. Click:
+
+   ```text id="q1v6zd"
+   Finish
+   ```
+
+Observation:
+
+* AVD device is created successfully.
+
+---
+
+# Part B: Starting Android Emulator
+
+## Step 6: Open Command Prompt
+
+Open Command Prompt in Windows.
+
+---
+
+## Step 7: Navigate to Emulator Directory
+
+Execute:
+
+```bash id="p7k3wn"
+cd C:\Users\Admin\AppData\Local\Android\Sdk\emulator
+```
+
+---
+
+## Step 8: List Available AVDs
+
+Execute:
+
+```bash id="r2m9qx"
+emulator -list-avds
+```
+
+Example output:
+
+```text id="w5v1tc"
+Medium_Phone_API_36.1
+Pixel_2
+Pixel_9
+```
+
+---
+
+## Step 9: Start Emulator with Proxy
+
+Execute:
+
+```bash id="u8n4pd"
+emulator -avd Pixel_9 -http-proxy http://10.0.2.2:8080
+```
+
+Explanation:
+
+* `Pixel_9` → Name of emulator
+* `10.0.2.2` → Host machine IP accessible inside emulator
+* `8080` → Burp Suite proxy port
+
+Observation:
+
+* Android emulator starts successfully.
+
+---
+
+# Part C: Configuring Proxy in Emulator
+
+## Step 10: Open Network Settings in AVD
+
+Inside emulator:
+
+1. Open:
+
+   ```text id="c4v7mb"
+   Settings
+   ```
+
+2. Navigate to:
+
+```text id="j1q9xp"
+Network & Internet → Internet
+```
+
+3. Click connected network icon.
+
+4. Click:
+
+   ```text id="y6r2tw"
+   Edit (Pencil Icon)
+   ```
+
+5. Open:
+
+   ```text id="k8p5vf"
+   Advanced Options
+   ```
+
+---
+
+## Step 11: Configure Manual Proxy
+
+1. Change Proxy setting:
+
+   ```text id="g3n8rd"
+   None → Manual
+   ```
+
+2. Enter:
+
+### Hostname
+
+```text id="b7x1ze"
+10.0.2.2
+```
+
+### Port
+
+```text id="m4v9pk"
+8080
+```
+
+3. Click:
+
+   ```text id="t2w6qa"
+   Save
+   ```
+
+---
+
+## Step 12: Alternative Proxy Setup using ADB
+
+If proxy save option does not work:
+
+Open another Command Prompt.
+
+Navigate to platform-tools:
+
+```bash id="d8k5rm"
+cd C:\Users\Admin\AppData\Local\Android\Sdk\platform-tools
+```
+
+Check connected devices:
+
+```bash id="p1v7nx"
+adb devices
+```
+
+Expected output:
+
+```text id="q9m2zc"
+List of devices attached
+emulator-5554 device
+```
+
+Set proxy manually:
+
+```bash id="w6t3qe"
+adb shell settings put global http_proxy 10.0.2.2:8080
+```
+
+Verify proxy:
+
+```bash id="h4x8pv"
+adb shell settings get global http_proxy
+```
+
+Expected output:
+
+```text id="u7n1md"
+10.0.2.2:8080
+```
+
+---
+
+# Part D: Configuring Burp Suite
+
+## Step 13: Open Burp Suite
+
+1. Launch Burp Suite.
+
+2. Select:
+
+   ```text id="m8q5vf"
+   Temporary Project
+   ```
+
+3. Click:
+
+   ```text id="z3p9tw"
+   Start Burp
+   ```
+
+---
+
+## Step 14: Configure Proxy Listener
+
+1. Navigate to:
+
+```text id="y5r2qx"
+Proxy → Options
+```
+
+2. Under:
+
+   ```text id="x8m4vn"
+   Proxy Listeners
+   ```
+
+3. Click:
+
+   ```text id="k6t1pd"
+   Edit
+   ```
+
+4. Select:
+
+   ```text id="p4w7mb"
+   All Interfaces
+   ```
+
+5. Click:
+
+   ```text id="r9v2qe"
+   OK
+   ```
+
+Observation:
+
+* Burp Suite accepts traffic from emulator.
+
+---
+
+## Step 15: Enable Intercept
+
+Navigate to:
+
+```text id="u2x5pk"
+Proxy → Intercept
+```
+
+Turn:
+
+```text id="m1v9rd"
+Intercept ON
+```
+
+---
+
+# Part E: Capturing HTTP Traffic
+
+## Step 16: Open Browser in Emulator
+
+1. Open Chrome browser inside emulator.
+2. Visit:
+
+```text id="c8n4tw"
+http://example.com
+```
+
+Observation:
+
+* Request appears inside Burp Suite HTTP history.
+
+---
+
+## Step 17: Verify HTTP Traffic
+
+In Burp Suite:
+
+```text id="w7q3mx"
+Proxy → HTTP History
+```
+
+Observation:
+
+* HTTP requests and responses are visible.
+
+---
+
+# Part F: Installing Burp CA Certificate for HTTPS Interception
+
+## Step 18: Export Burp CA Certificate
+
+In Burp Suite:
+
+1. Navigate to:
+
+```text id="f1p6vz"
+Proxy → Options
+```
+
+2. Click:
+
+```text id="r5m9qd"
+Import / Export CA Certificate
+```
+
+3. Select:
+
+   ```text id="n2v8wx"
+   Certificate in DER Format
+   ```
+
+4. Save file as:
+
+```text id="k7t4pm"
+burpcer.der
+```
+
+Save it in Downloads folder.
+
+---
+
+## Step 19: Push Certificate to Emulator
+
+Open Command Prompt.
+
+Navigate to platform-tools:
+
+```bash id="p8w2vn"
+cd C:\Users\Admin\AppData\Local\Android\Sdk\platform-tools
+```
+
+Push certificate:
+
+```bash id="x4q7me"
+adb push C:\Users\Admin\Downloads\burpcer.der /sdcard/Download/
+```
+
+Observation:
+
+* Certificate transfers successfully to emulator.
+
+---
+
+## Step 20: Install Certificate in Emulator
+
+Inside emulator:
+
+1. Open:
+
+   ```text id="m6t1zr"
+   Settings
+   ```
+
+2. Navigate to:
+
+```text id="j3v8pk"
+Security & Privacy
+→ More Security & Privacy
+→ Encryption & Credentials
+→ Install a Certificate
+→ CA Certificate
+```
+
+3. Select:
+
+   ```text id="u5x2rd"
+   burpcer.der
+   ```
+
+4. Confirm installation.
+
+Observation:
+
+* Burp CA certificate installed successfully.
+
+---
+
+# Part G: Verifying HTTPS Interception
+
+## Step 21: Open HTTPS Website
+
+Inside emulator browser, visit:
+
+```text id="c9w4qm"
+https://example.com
+```
+
+---
+
+## Step 22: Analyze HTTPS Traffic
+
+In Burp Suite:
+
+```text id="r7p1vx"
+Proxy → HTTP History
+```
+
+Observation:
+
+* HTTPS requests and responses become visible.
+* Burp Suite successfully decrypts HTTPS traffic.
+
+---
+
+# OBSERVATIONS
+
+1. Android Virtual Device (AVD) was successfully created and started.
+2. Proxy settings were configured successfully between emulator and Burp Suite.
+3. HTTP traffic from emulator browser was intercepted successfully.
+4. Burp Suite proxy listener accepted traffic from all interfaces.
+5. HTTP requests and responses appeared in Burp HTTP History.
+6. Burp CA certificate was exported and installed successfully in emulator.
+7. HTTPS websites became accessible through Burp interception.
+8. HTTPS requests and responses were successfully decrypted and analyzed.
+9. Application network communication could be monitored and inspected.
+10. Proxy interception demonstrated how mobile traffic analysis works.
+
+---
+
+# RESULT
+
+Android application network traffic was successfully intercepted and analyzed using an Android Emulator and Burp Suite. Both HTTP and HTTPS requests were captured successfully after configuring proxy settings and installing the Burp Suite CA certificate in the emulator.
